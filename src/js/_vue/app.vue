@@ -1,11 +1,15 @@
 <style scoped lang="stylus">
   .red
-    display: flex
     color: red
 </style>
 
 <template>
-  <h1 class="red">{{msg}}</h1>
+  <div>
+    <router-link to="/">List</router-link>
+    <router-link to="/detail">Detail</router-link>
+    <router-link to="/search">Search</router-link>
+    <router-view></router-view>
+  </div>
 </template>
 
 <script>

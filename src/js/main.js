@@ -5,7 +5,7 @@ import App from './_vue/app.vue';
 import List from './_vue/list.vue';
 import Detail from './_vue/detail.vue';
 import Search from './_vue/search.vue';
-import Data from '../sample.json';
+import Store from './_lib/store'
 
 // use plugins
 Vue.use(VueRouter);
@@ -23,12 +23,7 @@ const router = new VueRouter({
 });
 
 // setup store
-const store = new Vuex.Store({
-	state: {
-		data: Data
-	},
-	mutations: {}
-});
+const store = new Vuex.Store(Store);
 
 // setup app
 new Vue({

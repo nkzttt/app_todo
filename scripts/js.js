@@ -21,7 +21,9 @@ const compile = (filePath) => {
         use: [autoprefixer()]
       }
     });
-    b.transform('uglifyify', {global: true});
+    if (process.env.NODE_ENV === 'production') {
+      b.transform('uglifyify', {global: true});
+    }
     b.bundle((err, buf) => {
       if (err) {
         console.error(err);

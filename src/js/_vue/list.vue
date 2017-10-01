@@ -17,9 +17,9 @@
       <li v-for="(item, i) in data" class="list__item" v-bind:data-index="i">
         <div class="listDetail">
           <p class="listDetail__title">
-            <a href="#" class="listDetail__title__linkText" data-editTarget>
+            <router-link v-bind:to="`/detail/${i}`" class="listDetail__title__linkText" data-editTarget>
               {{item.name}}
-            </a>
+            </router-link>
             <input type="text" v-bind:value="item.name" class="listDetail__title__editText" data-editor style="display: none">
             <button class="listDetail__title__editBtn" v-on:click="editList">編集</button>
           </p>

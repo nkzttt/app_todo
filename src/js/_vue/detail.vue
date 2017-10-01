@@ -56,28 +56,35 @@
   export default {
     data () {
       return {
-        newName: ''
+        newName: '',
+        listIndex: parseInt(this.$route.params.index, 10)
       }
     },
     methods: {
       addTodo (e) {
         this.$store
-            .dispatch('addTodo', this.newName)
+            .dispatch('addTodo', {
+              listIndex: this.listIndex,
+              todoName: this.newName
+            })
             .then(function () {
               this.newName = '';
             }.bind(this));
       },
       editTodo (e) {
-        editName.call(this, e.target, 'editTodo');
+        editName.call(this, e.target, 'editTodo', this.listIndex);
       },
       deleteTodo (e) {
         const index = parseInt(searchClosestTag(e.target, 'li').dataset.index, 10);
-        this.$store.dispatch('deleteTodo', index);
+        this.$store.dispatch('deleteTodo', {
+          listIndex: this.listIndex,
+          index
+        });
       }
     },
     computed: {
       todos () {
-        const todos = this.$store.state.data[0].todos;
+        const todos = this.$store.state.data[this.listIndex].todos;
         return (todos && todos.length) ? todos : [];
       }
     }

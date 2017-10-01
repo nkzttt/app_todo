@@ -22,7 +22,7 @@ function searchClosestTag(current, tagName) {
  * @param eventTarget {Element}
  * @param dispatchName {String}
  */
-function editName(eventTarget, dispatchName) {
+function editName(eventTarget, dispatchName, listIndex) {
   // elements
   const parent = eventTarget.parentElement;
   const button = eventTarget;
@@ -41,7 +41,8 @@ function editName(eventTarget, dispatchName) {
 
     this.$store
       .dispatch(dispatchName, {
-        index: index,
+        index,
+        listIndex,
         name: input.value
       })
       .then(function () {

@@ -8,20 +8,20 @@ export default {
     addList ({data}, listData) {
       data.push(listData);
     },
-    editList ({data}, editData) {
-      data[editData.index].name = editData.name;
+    editList ({data}, {index, name}) {
+      data[index].name = name;
     },
     deleteList ({data}, index) {
       data.splice(index, 1)
     },
-    addTodo ({data}, todoData) {
-      data[0].todos.push(todoData);
+    addTodo ({data}, {listIndex, todoData}) {
+      data[listIndex].todos.push(todoData);
     },
-    editTodo ({data}, editData) {
-      data[0].todos[editData.index].name = editData.name;
+    editTodo ({data}, {index, listIndex, name}) {
+      data[listIndex].todos[index].name = name;
     },
-    deleteTodo ({data}, index) {
-      data[0].todos.splice(index, 1)
+    deleteTodo ({data}, {listIndex, index}) {
+      data[listIndex].todos.splice(index, 1)
     }
   },
   actions: {
@@ -35,15 +35,18 @@ export default {
     deleteList ({commit}, index) {
       commit('deleteList', index);
     },
-    addTodo ({commit}, todoName) {
+    addTodo ({commit}, {listIndex, todoName}) {
       const todoData = createNewTodo(todoName);
-      commit('addTodo', todoData);
+      commit('addTodo', {
+        listIndex,
+        todoData
+      });
     },
     editTodo ({commit}, editData) {
       commit('editTodo', editData);
     },
-    deleteTodo ({commit}, index) {
-      commit('deleteTodo', index);
+    deleteTodo ({commit}, deleteData) {
+      commit('deleteTodo', deleteData);
     }
   }
 }

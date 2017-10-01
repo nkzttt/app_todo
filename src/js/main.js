@@ -14,7 +14,7 @@ Vue.use(Vuex);
 // setup routing
 const routes = [
 	{path: '/', component: List},
-	{path: '/detail', component: Detail},
+	{path: '/detail/:index', component: Detail},
 	{path: '/search', component: Search}
 ];
 

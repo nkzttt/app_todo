@@ -13,6 +13,15 @@ export default {
     },
     deleteList ({data}, index) {
       data.splice(index, 1)
+    },
+    addTodo ({data}, todoData) {
+      data[0].todos.push(todoData);
+    },
+    editTodo ({data}, editData) {
+      data[0].todos[editData.index].name = editData.name;
+    },
+    deleteTodo ({data}, index) {
+      data[0].todos.splice(index, 1)
     }
   },
   actions: {
@@ -25,6 +34,16 @@ export default {
     },
     deleteList ({commit}, index) {
       commit('deleteList', index);
+    },
+    addTodo ({commit}, todoName) {
+      const todoData = createNewTodo(todoName);
+      commit('addTodo', todoData);
+    },
+    editTodo ({commit}, editData) {
+      commit('editTodo', editData);
+    },
+    deleteTodo ({commit}, index) {
+      commit('deleteTodo', index);
     }
   }
 }
@@ -33,5 +52,14 @@ function createNewList(name) {
   return {
     name,
     todos: []
+  }
+}
+
+function createNewTodo(name) {
+  return {
+    name,
+    timeCreated: "2000-09-21",
+    timeLimit: "2000-09-30",
+    isDone: false
   }
 }

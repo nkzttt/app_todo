@@ -35,9 +35,9 @@
       <li v-for="(todo, i) in todos" class="todos__item" v-bind:data-index="i">
         <div class="todoDetail">
           <p class="todoDetail__title">
-            <p class="todoDetail__title__text" data-editTarget="">
+            <span class="todoDetail__title__text" data-editTarget="">
               {{todo.name}}
-            </p>
+            </span>
             <input type="text" v-bind:value="todo.name" class="todoDetail__title__editText" data-editor="" style="display: none">
             <button class="todoDetail__title__editBtn" v-on:click="editTodo">編集</button>
           </p>

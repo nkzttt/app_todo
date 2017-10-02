@@ -4,7 +4,7 @@
 </style>
 
 <template>
-  <div>
+  <div class="header">
     <router-link to="/">List</router-link>
     <router-link to="/search">Search</router-link>
     <router-view></router-view>

@@ -4,6 +4,8 @@
   "private": true,
   "scripts": {
     "start": "npm run prod",
+    "test": "testcafe chrome test",
+    "test:file": "testcafe chrome",
     "prod": "run-s prod:build prod:server",
     "prod:server": "cross-env NODE_ENV=production node bin/run",
     "prod:build": "npm run build",
@@ -52,6 +54,7 @@
     "npm-run-all": "^4.0.2",
     "rimraf": "^2.6.1",
     "stylus": "^0.54.5",
+    "testcafe": "^0.17.2",
     "uglifyify": "^4.0.3",
     "vueify": "^9.4.1",
     "wait-on": "^2.0.2"

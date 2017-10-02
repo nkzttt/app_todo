@@ -11,6 +11,8 @@ fixture('system check')
  * - リストが追加できる
  * - 新規リストの詳細に遷移でき、TODOアイテムが空である
  * - TODOアイテムが追加できる
+ * - TODOアイテムを追加した際に親リストが先頭にくる
+ * - ソート後のリストでも詳細画面に遷移できる
  * - 別リストのTODOアイテムとリンクしていない
  */
 test('check addition flow', async t => {
@@ -43,7 +45,7 @@ test('check addition flow', async t => {
 
   assert(initialItemsNum === 0);
 
-  // TODOアイテムの追加
+  // 新規TODOアイテムの追加
   const newTodoItemName = '新しいアイテム';
   const addItemInput = Selector('.addTodo__input').find('input[type="text"]');
   const addItemSubmit = Selector('.addTodo__submit').child('button');
@@ -57,12 +59,29 @@ test('check addition flow', async t => {
 
   assert(currentItemsNum === initialItemsNum + 1);
 
-  // 別リストの詳細画面へ遷移
+  // リスト画面へ戻り親リストが先頭になっていることの確認
   const topLink = Selector('.siteLogo');
 
   await t
-    .click(topLink)
+    .click(topLink);
+
+  const listLinkMovedToTop = await listLink.nth(0).innerText;
+
+  assert(listLinkMovedToTop.trim() === newListName);
+
+  // 再度新規リスト詳細画面へ遷移し新規TODOアイテムを確認する
+  await t
     .click(listLink.nth(0));
+
+  const newTodoItem = await Selector('.todoDetail__title__text').nth(0).innerText;
+
+  assert(newTodoItem.trim() === newTodoItemName);
+
+
+  // 別リストの詳細画面へ遷移
+  await t
+    .click(topLink)
+    .click(listLink.nth(1));
 
   // 上で追加したアイテムが存在しないことの確認
   const otherTodoItemTitles = Selector('.todoDetail__title__text');

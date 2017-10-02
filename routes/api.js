@@ -1,9 +1,8 @@
 const router = require('koa-router')();
-const moment = require('moment');
-moment.locale('ja');
 
 // require api modules
 const createDataList = require('../api/create-data-list');
+const validateList = require('../api/validate-list');
 
 // api test
 router.post('/', async function (ctx, next) {
@@ -14,6 +13,11 @@ router.post('/', async function (ctx, next) {
 // create data for list page
 router.post('/create-data/list', async function (ctx, next) {
   ctx.body = createDataList(ctx.request.body);
+});
+
+// validate addition list
+router.post('/validate/list', async function (ctx, next) {
+  ctx.body = validateList(ctx.request.body);;
 });
 
 module.exports = router;

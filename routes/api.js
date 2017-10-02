@@ -21,6 +21,8 @@ router.post('/create-data/list', async function (ctx, next) {
 
     // count done todos.
     additionData.todos.done = (() => {
+      if (!data.todos.length) return 0;
+
       let doneNum = 0;
       data.todos.forEach((todo) => {
         if (todo.isDone) doneNum++;
@@ -30,6 +32,8 @@ router.post('/create-data/list', async function (ctx, next) {
 
     // get nearest limit day, and it format by moment
     additionData.nearestLimit = (() => {
+      if (!data.todos.length) return null;
+
       let days = [];
       data.todos.forEach((todo) => {
         const dayNum = parseInt(todo.timeLimit, 10);
@@ -39,9 +43,27 @@ router.post('/create-data/list', async function (ctx, next) {
       return moment(maxDayNum + '').format('YYYY年MM月DD日');
     })();
 
+    // get newest todoItem for sort
+    additionData.newestTodoNum = (() => {
+      if (!data.todos.length) return null;
+
+      let days = [];
+      data.todos.forEach((todo) => {
+        const dayNum = parseInt(todo.timeLimit, 10);
+        days.push(dayNum);
+      });
+      return Math.max.apply(null, days);
+    })();
+
     newData.push(additionData);
   });
 
+  // sort by timeCreated
+  newData.sort((a, b) => {
+    return b.newestTodoNum - a.newestTodoNum;
+  });
+
+  // response data
   ctx.body = newData;
 });
 

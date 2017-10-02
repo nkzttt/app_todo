@@ -34,6 +34,16 @@
 
 <script>
   import {searchClosestTag, editName} from '../_util/methods';
+  import {post} from 'superagent';
+
+  post('/api').end(function(err, res) {
+    if (err) {
+      console.error(err.response.body.message);
+    } else {
+      console.log(res.body);
+    }
+  });
+
 
   export default {
     data () {

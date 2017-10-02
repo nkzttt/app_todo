@@ -8,8 +8,7 @@ const onerror = require('koa-onerror');
 const bodyparser = require('koa-bodyparser')();
 const logger = require('koa-logger');
 
-const index = require('./routes/index');
-const users = require('./routes/users');
+const api = require('./routes/api');
 
 // middlewares
 app.use(convert(bodyparser));
@@ -45,11 +44,17 @@ app.context.createState = (state) => {
 };
 
 // routing
-router.use('/', index.routes(), index.allowedMethods());
-router.use('/users', users.routes(), users.allowedMethods());
+router.get('/', async function (ctx, next) {
+  ctx.state = ctx.createState({
+    title: 'TODOリスト'
+  });
+
+  await ctx.render('index');
+});
+
+router.use('/api', api.routes(), api.allowedMethods());
 
 app.use(router.routes(), router.allowedMethods());
-// response
 
 app.on('error', function(err, ctx){
   console.log(err);

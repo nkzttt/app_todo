@@ -55,6 +55,44 @@ test('can add and remove todoList', async t => {
   assert(countTodoListAfterDel === countTodoList - 1);
 });
 
+// 新規リスト追加時のバリデーションが行われる
+test('validate addition todoList', async t => {
+  const input = Selector('.addList__input').child('input[type="text"]');
+  const submit = Selector('.addList__submit').child('button');
+  const todoList = Selector('.listDetail__title__linkText');
+  const initialTodoListNum = await todoList.count;
+  let currentTodoListNum = 0;
+
+  // 未入力でsubmit
+  await t
+    .click(submit);
+  currentTodoListNum = await todoList.count;
+  assert(initialTodoListNum === currentTodoListNum);
+
+  // 31文字でsubmit
+  const longStr = 'あいうえおあいうえおあいうえおあいうえおあいうえおあいうえおん';
+  await t
+    .typeText(input, longStr)
+    .click(submit);
+  currentTodoListNum = await todoList.count;
+  assert(initialTodoListNum === currentTodoListNum);
+
+  // 正常値でsubmit
+  const newTodoListName = '新しいリスト';
+  await t
+    .typeText(input, newTodoListName, {replace: true})
+    .click(submit);
+  currentTodoListNum = await todoList.count;
+  assert(initialTodoListNum+1 === currentTodoListNum);
+
+  // 同じ値でsubmit
+  await t
+    .typeText(input, newTodoListName)
+    .click(submit);
+  currentTodoListNum = await todoList.count;
+  assert(initialTodoListNum+1 === currentTodoListNum);
+});
+
 // TODOリストの名前編集ができる
 test('can edit todoList', async t => {
   // 編集処理

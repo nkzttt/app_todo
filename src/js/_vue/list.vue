@@ -14,10 +14,10 @@
       </p>
     </div>
     <ul class="list">
-      <li v-for="(item, i) in customData" class="list__item" v-bind:data-index="i">
+      <li v-for="item in customData" class="list__item" v-bind:data-index="item.index">
         <div class="listDetail">
           <p class="listDetail__title">
-            <router-link v-bind:to="`/detail/${i}`" class="listDetail__title__linkText" data-editTarget>
+            <router-link v-bind:to="`/detail/${item.index}`" class="listDetail__title__linkText" data-editTarget>
               {{item.name}}
             </router-link>
             <input type="text" v-bind:value="item.name" class="listDetail__title__editText" data-editor style="display: none">

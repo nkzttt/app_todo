@@ -61,8 +61,8 @@ function createNewList(name) {
 function createNewTodo(name) {
   return {
     name,
-    timeCreated: "2000-09-21",
-    timeLimit: "2000-09-30",
+    timeCreated: "20010921",
+    timeLimit: "20010930",
     isDone: false
   }
 }

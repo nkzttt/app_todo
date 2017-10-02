@@ -14,7 +14,7 @@
       </p>
     </div>
     <ul class="list">
-      <li v-for="(item, i) in data" class="list__item" v-bind:data-index="i">
+      <li v-for="(item, i) in customData" class="list__item" v-bind:data-index="i">
         <div class="listDetail">
           <p class="listDetail__title">
             <router-link v-bind:to="`/detail/${i}`" class="listDetail__title__linkText" data-editTarget>
@@ -22,6 +22,16 @@
             </router-link>
             <input type="text" v-bind:value="item.name" class="listDetail__title__editText" data-editor style="display: none">
             <button class="listDetail__title__editBtn" v-on:click="editList">編集</button>
+          </p>
+          <p class="listDetail__number">
+            <span class="listDetail__number__total">
+              {{item.todos.total}}
+            </span>
+            個中
+            <span class="listDetail__number__done">
+              {{item.todos.done}}
+            </span>
+            個がチェック済み
           </p>
           <div class="listDetail__delete">
             <button class="listDetail__delete__btn" v-on:click="deleteList">削除</button>
@@ -36,19 +46,12 @@
   import {searchClosestTag, editName} from '../_util/methods';
   import {post} from 'superagent';
 
-  post('/api').end(function(err, res) {
-    if (err) {
-      console.error(err.response.body.message);
-    } else {
-      console.log(res.body);
-    }
-  });
-
-
   export default {
     data () {
       return {
-        newName: ''
+        newName: '',
+        data: this.$store.state.data,
+        customData: null
       }
     },
     methods: {
@@ -67,10 +70,39 @@
         this.$store.dispatch('deleteList', index);
       }
     },
-    computed: {
-      data () {
-        return this.$store.state.data
+    watch: {
+      data: {
+        handler (newData, oldData) {
+          createData(newData).then(function (customData) {
+            this.customData = customData;
+          }.bind(this)).catch(console.error);
+        },
+        deep: true
       }
+    },
+    mounted () {
+      createData(this.data).then(function (customData) {
+        this.customData = customData;
+      }.bind(this)).catch(console.error);
     }
+  }
+
+  /**
+   * サーバーでリスト画面用にデータを整形する
+   * @param data
+   * @returns {Promise}
+   */
+  function createData(data) {
+    return new Promise(function (resolve, reject) {
+      post('/api/create-data/list')
+          .send(data)
+          .end(function (err, res) {
+            if (err) {
+              reject(err);
+            } else {
+              resolve(res.body);
+            }
+          });
+    });
   }
 </script>

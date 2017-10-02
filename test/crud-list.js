@@ -3,7 +3,7 @@ const {Selector} = require('testcafe');
 
 const sampleData = require('../src/sample.json');
 
-fixture('check crud of top page')
+fixture('check crud of list page')
   .page('http://localhost:3001');
 
 // sample.jsonの中から、１つのTODOリストが表示されている

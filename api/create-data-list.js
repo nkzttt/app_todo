@@ -27,12 +27,10 @@ module.exports = (postData) => {
     additionData.nearestLimit = (() => {
       if (!postData[i].todos.length) return null;
 
-      let days = [];
-      postData[i].todos.forEach((todo) => {
-        const dayNum = parseInt(todo.timeLimit, 10);
-        days.push(dayNum);
+      const days = postData[i].todos.map(({timeLimit}) => {
+        return parseInt(timeLimit, 10);
       });
-      let maxDayNum = Math.max.apply(null, days);
+      const maxDayNum = Math.max.apply(null, days);
       return moment(maxDayNum + '').format('YYYY年MM月DD日');
     })();
 
@@ -40,10 +38,8 @@ module.exports = (postData) => {
     additionData.newestTodoNum = (() => {
       if (!postData[i].todos.length) return 0;
 
-      let days = [];
-      postData[i].todos.forEach((todo) => {
-        const dayNum = parseInt(todo.timeLimit, 10);
-        days.push(dayNum);
+      const days = postData[i].todos.map(({timeLimit}) => {
+        return parseInt(timeLimit, 10);
       });
       return Math.max.apply(null, days);
     })();

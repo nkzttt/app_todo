@@ -4,10 +4,30 @@
 </style>
 
 <template>
-  <div class="header">
-    <router-link to="/">List</router-link>
-    <router-link to="/search">Search</router-link>
-    <router-view></router-view>
+  <div class="container">
+    <div class="header">
+      <div class="header__insideContainer">
+        <div class="rootSiteLink">
+          <div class="rootSiteLink__logo">
+            <router-link to="/" class="siteLogo">
+              <span class="siteLogo__icon fa fa-check-circle-o"></span>
+              TODOリスト
+            </router-link>
+          </div>
+          <div class="rootSiteLink__search">
+            <router-link to="/search" class="rootSearch">
+              <span class="rootSearch__icon fa fa-search"></span>
+              検索
+            </router-link>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="main">
+      <div class="main__insideContainer">
+        <router-view></router-view>
+      </div>
+    </div>
   </div>
 </template>
 

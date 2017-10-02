@@ -58,7 +58,7 @@ test('check addition flow', async t => {
   assert(currentItemsNum === initialItemsNum + 1);
 
   // 別リストの詳細画面へ遷移
-  const topLink = Selector('.header').child('a').nth(0);
+  const topLink = Selector('.siteLogo');
 
   await t
     .click(topLink)

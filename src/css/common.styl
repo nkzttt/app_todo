@@ -3,6 +3,8 @@
 @import '_variables/*'
 @import '_mixins/*'
 @import '_partials/minireset'
+@import '_partials/font-awesome'
+@import '_partials/font-family'
 
 html,
 body
@@ -10,5 +12,63 @@ body
   height: 100%
   padding: 0
   margin: 0
-  background-color: #ddd
+
+html
+  font-size: $size-root
+
+body
+  background-color: $color-background
   color: $color-font
+  font-size: $size-font-normal
+  letter-spacing: 0.05rem
+
+a
+  color: $color-main
+
+.container
+  width: 100%
+
+.header
+  width: 100%
+  border-bottom: solid 1px $color-main
+  &__insideContainer
+    width: $size-container
+    position: relative
+    margin: 0 auto
+    padding: 0.75rem 0
+
+.rootSiteLink
+  display: flex
+  width: 100%
+  align-items center
+  justify-content space-between
+
+.siteLogo
+  display: block
+  position: relative
+  padding-left: 4rem
+  font-size: $size-font-primary
+  font-weight: bold
+  text-decoration: none
+  &__icon
+    display: block
+    position: absolute
+    top: 0
+    left: 0
+    font-size: 4rem
+
+.rootSearch
+  display: block
+  font-size: $size-font-small
+  text-decoration: none
+  text-align: center
+  &__icon
+    display: block
+    font-size: $size-font-primary
+
+.main
+  &__insideContainer
+    width: $size-container
+    position: relative
+    margin: 0 auto
+    padding-top: 1.5rem

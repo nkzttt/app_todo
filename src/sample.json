@@ -4,20 +4,20 @@
     "todos": [
       {
         "name": "やること１",
-        "timeCreated": "2000-09-21",
-        "timeLimit": "2000-09-30",
+        "timeCreated": "20000911",
+        "timeLimit": "20000920",
         "isDone": false
       },
       {
         "name": "やること２",
-        "timeCreated": "2000-09-11",
-        "timeLimit": "2000-09-20",
+        "timeCreated": "20000921",
+        "timeLimit": "20000930",
         "isDone": false
       },
       {
         "name": "やること３",
-        "timeCreated": "2000-09-01",
-        "timeLimit": "2000-09-10",
+        "timeCreated": "20000901",
+        "timeLimit": "20000910",
         "isDone": true
       }
     ]

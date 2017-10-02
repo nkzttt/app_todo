@@ -33,6 +33,9 @@
             </span>
             個がチェック済み
           </p>
+          <p class="listDetail__nearestLimit">
+            〜{{item.nearestLimit}}
+          </p>
           <div class="listDetail__delete">
             <button class="listDetail__delete__btn" v-on:click="deleteList">削除</button>
           </div>

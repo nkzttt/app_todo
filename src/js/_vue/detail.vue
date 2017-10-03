@@ -74,7 +74,7 @@
       <div class="addTodo__input">
         <label>
           TODO：
-          <input type="text" placeholder="例）シャンプー買う" v-model="newName" v-on:keypress="submitByEnter">
+          <input type="text" placeholder="例）シャンプー買う" v-model="newName" v-on:keypress="submitByEnter" data-addition>
         </label>
       </div>
       <div class="addTodo__choose">
@@ -129,23 +129,40 @@
 
   export default {
     data () {
+      const listIndex = parseInt(this.$route.params.index, 10);
+
       return {
         message: null,
         errorMessage: null,
         newName: '',
-        listIndex: parseInt(this.$route.params.index, 10)
+        listIndex,
+        todos: this.$store.state.data[listIndex].todos
       }
     },
     methods: {
       addTodo (e) {
-        this.$store
-            .dispatch('addTodo', {
-              listIndex: this.listIndex,
-              todoName: this.newName
-            })
-            .then(function () {
-              this.newName = '';
-            }.bind(this));
+        // validate
+        validateItemName(this.todos, this.newName).then(function (errorMessage) {
+
+          // エラーメッセージが帰って来たらエラーメッセージを表示して終了
+          if (errorMessage) {
+            displayMessage(this, errorMessage, 'errorMessage');
+            this.$el.querySelector('[data-addition]').focus();
+            return;
+          }
+
+          this.$store
+              .dispatch('addTodo', {
+                listIndex: this.listIndex,
+                todoName: this.newName
+              })
+              .then(function () {
+                this.newName = '';
+              }.bind(this));
+
+          displayMessage(this, '新しいアイテムが作成されました。');
+
+        }.bind(this)).catch(console.error);
       },
       editTodo (e) {
         editName.call(this, e.target, 'editTodo', this.listIndex);
@@ -175,12 +192,44 @@
         e.target.blur();
         submitBtn.click();
       }
-    },
-    computed: {
-      todos () {
-        const todos = this.$store.state.data[this.listIndex].todos;
-        return (todos && todos.length) ? todos : [];
-      }
     }
+  }
+
+  /**
+   * サーバーで新規TODOアイテムのバリデーションを行う
+   * @param data {Object}
+   * @param newName {String}
+   * @returns {Promise}
+   */
+  function validateItemName(data, newName) {
+    return new Promise(function (resolve, reject) {
+      post('/api/validate/item')
+          .send({
+            data,
+            newName
+          })
+          .end(function (err, res) {
+            if (err) return reject(err);
+
+            const errorMessage = res.text;
+            if (errorMessage) {
+              resolve(errorMessage);
+            } else {
+              resolve(null);
+            }
+          });
+    });
+  }
+
+  /**
+   * メッセージ表示と一定時間で非表示
+   * @param vm {Object} - vueインスタンス
+   * @param message {String}
+   */
+  function displayMessage(vm, message, target='message') {
+    vm[target] = message;
+    setTimeout(function () {
+      vm[target] = null;
+    }, 3000);
   }
 </script>

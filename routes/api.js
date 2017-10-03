@@ -17,7 +17,18 @@ router.post('/create-data/list', async function (ctx, next) {
 
 // validate addition list
 router.post('/validate/list', async function (ctx, next) {
-  ctx.body = validateList(ctx.request.body);;
+  ctx.body = validateList(ctx.request.body);
+});
+
+// validate addition todoItem
+router.post('/validate/item', async function (ctx, next) {
+  // validator is same as used for the list, so replace strings from 'リスト' to 'アイテム'
+  let errorMessage = validateList(ctx.request.body);
+  if (errorMessage) {
+    errorMessage = errorMessage.replace('リスト', 'アイテム');
+  }
+
+  ctx.body = errorMessage;
 });
 
 module.exports = router;

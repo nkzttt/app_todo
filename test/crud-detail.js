@@ -55,8 +55,46 @@ test('can add and remove todoItem', async t => {
   assert(countTodoItemsAfterDel === countTodoItems - 1);
 });
 
+// 新規アイテム追加時のバリデーションが行われる
+test('validate addition todoItem', async t => {
+  const input = Selector('.addTodo__input').find('input[type="text"]');
+  const submit = Selector('.addTodo__submit').child('button');
+  const todoItems = Selector('.todoDetail__title__text');
+  const initialTodoItemsNum = await todoItems.count;
+  let currentTodoItemsNum = 0;
+
+  // 未入力でsubmit
+  await t
+    .click(submit);
+  currentTodoItemsNum = await todoItems.count;
+  assert(initialTodoItemsNum === currentTodoItemsNum);
+
+  // 31文字でsubmit
+  const longStr = 'あいうえおあいうえおあいうえおあいうえおあいうえおあいうえおん';
+  await t
+    .typeText(input, longStr)
+    .click(submit);
+  currentTodoItemsNum = await todoItems.count;
+  assert(initialTodoItemsNum === currentTodoItemsNum);
+
+  // 正常値でsubmit
+  const newTodoItemName = '新しいリスト';
+  await t
+    .typeText(input, newTodoItemName, {replace: true})
+    .click(submit);
+  currentTodoItemsNum = await todoItems.count;
+  assert(initialTodoItemsNum+1 === currentTodoItemsNum);
+
+  // 同じ値でsubmit
+  await t
+    .typeText(input, newTodoItemName)
+    .click(submit);
+  currentTodoItemsNum = await todoItems.count;
+  assert(initialTodoItemsNum+1 === currentTodoItemsNum);
+});
+
 // TODOアイテムの名前編集ができる
-test('can edit todoList', async t => {
+test('can edit todoItem', async t => {
   // 編集処理
   const editTodoItemName = '編集アイテム';
   const editBtn = Selector('.todoDetail__title').nth(0).child('button');

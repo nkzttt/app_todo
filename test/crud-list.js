@@ -55,7 +55,26 @@ test('can add and remove todoList', async t => {
   assert(countTodoListAfterDel === countTodoList - 1);
 });
 
-// 新規リスト追加時のバリデーションが行われる
+// TODOリストの名前編集ができる
+test('can edit todoList', async t => {
+  // 編集処理
+  const editTodoListName = '編集リスト';
+  const editBtn = Selector('.listDetail__title').nth(0).child('button');
+  const editor = Selector('.listDetail__title').nth(0).child('input[type="text"]');
+
+  await t
+    .click(editBtn)
+    .typeText(editor, editTodoListName, {replace: true})
+    .click(editBtn);
+
+  // 編集された要素の確認
+  const todoList = Selector('.listDetail__title__linkText').nth(0);
+  const title = await todoList().innerText;
+
+  assert(title.trim() === editTodoListName);
+});
+
+// 新規リスト追加時と編集時にバリデーションが行われる
 test('validate addition todoList', async t => {
   const input = Selector('.addList__input').child('input[type="text"]');
   const submit = Selector('.addList__submit').child('button');
@@ -91,23 +110,22 @@ test('validate addition todoList', async t => {
     .click(submit);
   currentTodoListNum = await todoList.count;
   assert(initialTodoListNum+1 === currentTodoListNum);
-});
 
-// TODOリストの名前編集ができる
-test('can edit todoList', async t => {
-  // 編集処理
-  const editTodoListName = '編集リスト';
-  const editBtn = Selector('.listDetail__title').nth(0).child('button');
-  const editor = Selector('.listDetail__title').nth(0).child('input[type="text"]');
+  // 新しいリスト2追加
+  const newTodoListName2 = '新しいリスト2';
+  await t
+    .typeText(input, newTodoListName2, {replace: true})
+    .click(submit);
+  currentTodoListNum = await todoList.count;
+  assert(initialTodoListNum+2 === currentTodoListNum);
 
+  // 新しいリスト2を1と同じ名前にする
+  const editBtn = Selector('.listDetail__title').nth(currentTodoListNum-1).child('button');
+  const editor = Selector('.listDetail__title').nth(currentTodoListNum-1).child('input[type="text"]');
   await t
     .click(editBtn)
-    .typeText(editor, editTodoListName, {replace: true})
+    .typeText(editor, newTodoListName, {replace: true})
     .click(editBtn);
-
-  // 編集された要素の確認
-  const todoList = Selector('.listDetail__title__linkText').nth(0);
-  const title = await todoList().innerText;
-
-  assert(title.trim() === editTodoListName);
+  currentTodoListNum = await todoList.count;
+  assert(initialTodoListNum+2 === currentTodoListNum);
 });

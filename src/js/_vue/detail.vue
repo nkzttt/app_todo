@@ -176,7 +176,18 @@
       },
 
       editTodo (e) {
-        editName.call(this, e.target, 'editTodo', this.listIndex);
+        editName({
+          type: 'item',
+          vm: this,
+          eventTarget: e.target,
+          dispatchName: 'editTodo',
+          listIndex: this.listIndex
+        }).then(function (res) {
+          if (!res) return;
+
+          displayMessage(this, res.errorMessage, 'errorMessage');
+          res.input.focus();
+        }.bind(this)).catch(console.error);
       },
 
       deleteTodo (e) {

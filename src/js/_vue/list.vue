@@ -194,7 +194,17 @@
       },
 
       editList (e) {
-        editName.call(this, e.target, 'editList');
+        editName({
+          type: 'list',
+          vm: this,
+          eventTarget: e.target,
+          dispatchName: 'editList'
+        }).then(function (res) {
+          if (!res) return;
+
+          displayMessage(this, res.errorMessage, 'errorMessage');
+          res.input.focus();
+        }.bind(this)).catch(console.error);
       },
 
       deleteList (e) {

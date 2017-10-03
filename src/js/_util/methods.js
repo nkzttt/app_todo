@@ -21,11 +21,13 @@ function searchClosestTag(current, tagName) {
 
 /**
  * edit name of
+ * @param type {String}
+ * @param vm {Object}
  * @param eventTarget {Element}
  * @param dispatchName {String}
  * @param listIndex {Number}
  */
-function editName(eventTarget, dispatchName, listIndex) {
+function editName({type, vm, eventTarget, dispatchName, listIndex}) {
   // elements
   const parent = eventTarget.parentElement;
   const button = eventTarget;
@@ -36,34 +38,52 @@ function editName(eventTarget, dispatchName, listIndex) {
   const isEdit = Array.prototype.includes.call(parent.classList, editingClass);
   const index = parseInt(searchClosestTag(parent, 'li').dataset.index, 10);
 
-  if (isEdit) { // 編集完了
+  return new Promise(function (resolve, reject) {
+    if (isEdit) { // 編集完了
 
-    if (!input.value) {
-      return alert('値が空です。削除する場合は削除ボタンを押してください。');
+      // 値に変更がなければ表示を戻して終了
+      const beforeValue = input.previousElementSibling.innerText.trim();
+      if (beforeValue === input.value) {
+        resetDisplay();
+        return resolve(null);
+      }
+
+      // validate
+      validateNewName({
+        type,
+        data: vm.data || vm.todos,
+        newName: input.value
+      }).then(function (errorMessage) {
+        if (errorMessage) return resolve({errorMessage, input});
+
+        vm.$store
+          .dispatch(dispatchName, {
+            index,
+            listIndex,
+            name: input.value
+          })
+          .then(resetDisplay);
+      }).catch(reject);
+
+    } else {      // 編集開始
+
+      button.innerText = '決定';
+      link.style.display = 'none';
+      input.style.display = 'inline-block';
+      parent.classList.add(editingClass);
+      input.focus();
+
+      resolve(null);
+
     }
+  });
 
-    this.$store
-      .dispatch(dispatchName, {
-        index,
-        listIndex,
-        name: input.value
-      })
-      .then(function () {
-        button.innerText = '編集';
-        link.style.display = 'inline-block';
-        input.style.display = 'none';
-      }.bind(this));
-
-  } else {      // 編集開始
-
-    button.innerText = '決定';
-    link.style.display = 'none';
-    input.style.display = 'inline-block';
-    input.focus();
-
+  function resetDisplay() {
+    button.innerText = '編集';
+    link.style.display = 'inline-block';
+    input.style.display = 'none';
+    parent.classList.remove(editingClass);
   }
-
-  parent.classList.toggle(editingClass);
 }
 
 /**

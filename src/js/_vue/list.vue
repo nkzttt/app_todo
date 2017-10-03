@@ -52,6 +52,10 @@
     box-shadow: 1px 1px 3px $color-shadow
     overflow: hidden
     cursor: pointer
+    transition all 200ms ease-out
+    &:hover
+      transform translateY(-5px)
+      box-shadow: 5px 5px 10px $color-shadow
     &__title
       display: flex
       align-items: center
@@ -78,6 +82,7 @@
       bottom: 0
       right: 0
       background-color: $color-sub
+      hoverOpacityAnimation()
       &__btn
         width: 100%
         height: 100%
@@ -91,7 +96,7 @@
   <div class="pageList">
     <div class="addList">
       <div class="addList__input">
-        <input type="text" placeholder="例）買い物リスト" v-model="newName" data-addition>
+        <input type="text" placeholder="例）買い物リスト" v-model="newName" v-on:keypress="submitByEnter" data-addition>
       </div>
       <p class="addList__submit">
         <button class="btn btn--primary" v-on:click="addList">リストの作成</button>
@@ -110,7 +115,7 @@
             <router-link v-bind:to="`/detail/${item.index}`" class="listDetail__title__linkText" data-editTarget>
               {{item.name}}
             </router-link>
-            <input type="text" v-bind:value="item.name" class="listDetail__title__editText" data-editor style="display: none">
+            <input type="text" v-bind:value="item.name" class="listDetail__title__editText" data-editor style="display: none" v-on:keypress="submitByEnter">
             <button class="listDetail__title__editBtn btn btn--small btn--secondary" v-on:click.stop="editList">編集</button>
           </p>
           <p class="listDetail__number" v-if="item.todos.total">
@@ -185,6 +190,24 @@
         this.$store.dispatch('deleteList', index).then(function () {
           displayMessage(this, 'リストが正常に削除されました。');
         }.bind(this));
+      },
+      submitByEnter (e) {
+        if (e.which !== 13) return;
+
+        // 一番近いsubmitボタンを探す
+        let parent = e.target.parentElement;
+        let submitBtn = parent.querySelector('button');
+
+        while (!submitBtn) {
+          if (!parent) return;
+
+          submitBtn = parent.querySelector('button');
+          parent = parent.parentElement;
+        }
+
+        // フォーカスを外してsubmit
+        e.target.blur();
+        submitBtn.click();
       }
     },
     watch: {

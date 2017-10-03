@@ -1,6 +1,6 @@
 <style scoped lang="stylus">
-  .red
-    color: red
+  @import '../../css/_variables/*'
+  @import '../../css/_mixins/*'
 </style>
 
 <template>

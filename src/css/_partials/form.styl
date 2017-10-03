@@ -1,0 +1,28 @@
+// reset style
+button
+input[type="text"]
+input[type="submit"]
+textarea
+	margin: 0
+	padding: 0
+	border none
+	outline none
+	background-color: transparent
+	font-family: -apple-system, BlinkMacSystemFont, "Helvetica Neue", "Original Yu Gothic", "Yu Gothic", YuGothic, Verdana, Meiryo, "M+ 1p", sans-serif;
+	font-size: $size-font-normal
+	line-height: 1
+
+input[type="text"]
+textarea
+	&::placeholder
+		color: $color-disable
+	&:focus
+		box-shadow 0 0 5px $color-main
+		border-color $color-main
+
+input[type="text"]
+	display: inline-block
+	padding: 3px 5px 4px 7px
+	border-radius 3px
+	border solid 1px $color-border
+	background-color: #fff

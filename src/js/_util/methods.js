@@ -56,6 +56,7 @@ function editName(eventTarget, dispatchName, listIndex) {
     button.innerText = '決定';
     link.style.display = 'none';
     input.style.display = 'inline-block';
+    input.focus();
 
   }
 

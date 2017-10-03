@@ -1,4 +1,7 @@
 <style scoped lang="stylus">
+  @import '../../css/_variables/*'
+  @import '../../css/_mixins/*'
+
   .message-enter-active
   .message-leave-active
     transition: opacity .3s
@@ -7,7 +10,81 @@
     opacity: 0
 
   .errorMessage
-    color: red
+    color: $color-sub
+
+  .addList
+    display: table
+    width: 50%
+    margin-bottom 3rem
+    align-items: center
+    &__input
+    &__submit
+      display: table-cell
+    &__input
+      width: 100%
+      padding-right 1rem
+      > input
+        width: 100%
+    &__submit
+      white-space nowrap
+
+  .message
+  .errorMessage
+    margin -1.5rem 0 3rem
+    padding: 5px 1rem 6px
+    border-radius: 3px
+    border: solid 1px $color-main
+    color: $color-main
+  .errorMessage
+    border-color: $color-sub
+    color: $color-sub
+
+  .list
+    &__item + &__item
+      margin-top: 1.5rem
+
+  .listDetail
+    position: relative
+    padding: 1.5rem
+    padding-right: 5rem
+    border-radius: 3px
+    background-color: #fff
+    box-shadow: 1px 1px 3px $color-shadow
+    overflow: hidden
+    cursor: pointer
+    &__title
+      display: flex
+      align-items: center
+      margin-bottom: 1.5rem
+      &__linkText
+        display: inline-block
+        margin-right 1.5rem
+        font-size: $size-font-primary
+        font-weight: bold
+        text-decoration: none
+      &__editText
+        display: inline-block
+        margin-right 1rem
+    &__number
+      margin-bottom: 0.5rem
+      &__total
+      &__done
+        font-size: $size-font-secondary
+        font-weight: bold
+    &__delete
+      width: 5rem
+      position: absolute
+      top: 0
+      bottom: 0
+      right: 0
+      background-color: $color-sub
+      &__btn
+        width: 100%
+        height: 100%
+        color: #fff
+        font-size: $size-font-primary
+        font-weight: bold
+        cursor: pointer
 </style>
 
 <template>
@@ -17,22 +94,24 @@
         <input type="text" placeholder="例）買い物リスト" v-model="newName" data-addition>
       </div>
       <p class="addList__submit">
-        <button v-on:click="addList">リストの作成</button>
+        <button class="btn btn--primary" v-on:click="addList">リストの作成</button>
       </p>
     </div>
     <transition name="message">
       <p class="message" v-text="message" v-if="message"></p>
+    </transition>
+    <transition name="message">
       <p class="errorMessage" v-text="errorMessage" v-if="errorMessage"></p>
     </transition>
     <ul class="list">
       <li v-for="item in customData" class="list__item" v-bind:data-index="item.index">
-        <div class="listDetail">
+        <div class="listDetail" v-on:click="cassetteLink">
           <p class="listDetail__title">
             <router-link v-bind:to="`/detail/${item.index}`" class="listDetail__title__linkText" data-editTarget>
               {{item.name}}
             </router-link>
             <input type="text" v-bind:value="item.name" class="listDetail__title__editText" data-editor style="display: none">
-            <button class="listDetail__title__editBtn" v-on:click="editList">編集</button>
+            <button class="listDetail__title__editBtn btn btn--small btn--secondary" v-on:click.stop="editList">編集</button>
           </p>
           <p class="listDetail__number" v-if="item.todos.total">
             <span class="listDetail__number__total">
@@ -48,7 +127,9 @@
             〜{{item.nearestLimit}}
           </p>
           <div class="listDetail__delete">
-            <button class="listDetail__delete__btn" v-on:click="deleteList">削除</button>
+            <button class="listDetail__delete__btn" v-on:click.stop="deleteList">
+              <span class="fa fa-trash-o"></span>
+            </button>
           </div>
         </div>
       </li>
@@ -71,6 +152,9 @@
       }
     },
     methods: {
+      cassetteLink (e) {
+        e.currentTarget.querySelector('a').click();
+      },
       addList (e) {
         // validate
         validateListName(this.data, this.newName).then(function (errorMessage) {

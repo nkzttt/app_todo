@@ -2,9 +2,7 @@
 
 @import '_variables/*'
 @import '_mixins/*'
-@import '_partials/minireset'
-@import '_partials/font-awesome'
-@import '_partials/font-family'
+@import '_partials/*'
 
 html,
 body
@@ -51,11 +49,11 @@ a
   font-size: $size-font-primary
   font-weight: bold
   text-decoration: none
-  text-shadow 1px 1px 3px $color-shaow
+  text-shadow 1px 1px 3px $color-shadow
   &__icon
     display: block
     position: absolute
-    top: 0
+    top: (($size-font-primary - 4rem) / 2)
     left: 0
     font-size: 4rem
 
@@ -65,9 +63,10 @@ a
   font-size: $size-font-small
   text-decoration: none
   text-align: center
-  text-shadow 1px 1px 3px $color-shaow
+  text-shadow 1px 1px 3px $color-shadow
   &__icon
     display: block
+    margin-bottom: 3px
     font-size: $size-font-primary
 
 .main
@@ -75,4 +74,4 @@ a
     width: $size-container
     position: relative
     margin: 0 auto
-    padding-top: 1.5rem
+    padding-top: 3rem

@@ -124,8 +124,13 @@
 </template>
 
 <script>
-  import {searchClosestTag, editName} from '../_util/methods';
-  import {post} from 'superagent';
+  import {
+      searchClosestTag,
+      editName,
+      submitByEnter,
+      createData,
+      validateNewName
+  } from '../_util/methods';
 
   export default {
     data () {
@@ -139,10 +144,15 @@
         todos: this.$store.state.data[listIndex].todos
       }
     },
+
     methods: {
       addTodo (e) {
         // validate
-        validateItemName(this.todos, this.newName).then(function (errorMessage) {
+        validateNewName({
+          type: 'item',
+          data: this.todos,
+          newName: this.newName
+        }).then(function (errorMessage) {
 
           // エラーメッセージが帰って来たらエラーメッセージを表示して終了
           if (errorMessage) {
@@ -164,9 +174,11 @@
 
         }.bind(this)).catch(console.error);
       },
+
       editTodo (e) {
         editName.call(this, e.target, 'editTodo', this.listIndex);
       },
+
       deleteTodo (e) {
         const index = parseInt(searchClosestTag(e.target, 'li').dataset.index, 10);
         this.$store.dispatch('deleteTodo', {
@@ -174,51 +186,9 @@
           index
         });
       },
-      submitByEnter (e) {
-        if (e.which !== 13) return;
 
-        // 一番近いsubmitボタンを探す
-        let parent = e.target.parentElement;
-        let submitBtn = parent.querySelector('button');
-
-        while (!submitBtn) {
-          if (!parent) return;
-
-          submitBtn = parent.querySelector('button');
-          parent = parent.parentElement;
-        }
-
-        // フォーカスを外してsubmit
-        e.target.blur();
-        submitBtn.click();
-      }
+      submitByEnter
     }
-  }
-
-  /**
-   * サーバーで新規TODOアイテムのバリデーションを行う
-   * @param data {Object}
-   * @param newName {String}
-   * @returns {Promise}
-   */
-  function validateItemName(data, newName) {
-    return new Promise(function (resolve, reject) {
-      post('/api/validate/item')
-          .send({
-            data,
-            newName
-          })
-          .end(function (err, res) {
-            if (err) return reject(err);
-
-            const errorMessage = res.text;
-            if (errorMessage) {
-              resolve(errorMessage);
-            } else {
-              resolve(null);
-            }
-          });
-    });
   }
 
   /**

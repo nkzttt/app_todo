@@ -143,8 +143,13 @@
 </template>
 
 <script>
-  import {searchClosestTag, editName} from '../_util/methods';
-  import {post} from 'superagent';
+  import {
+      searchClosestTag,
+      editName,
+      submitByEnter,
+      createData,
+      validateNewName
+  } from '../_util/methods';
 
   export default {
     data () {
@@ -156,13 +161,19 @@
         customData: null
       }
     },
+
     methods: {
       cassetteLink (e) {
         e.currentTarget.querySelector('a').click();
       },
+
       addList (e) {
         // validate
-        validateListName(this.data, this.newName).then(function (errorMessage) {
+        validateNewName({
+          type: 'list',
+          data: this.data,
+          newName: this.newName
+        }).then(function (errorMessage) {
 
           // エラーメッセージが帰って来たらエラーメッセージを表示して終了
           if (errorMessage) {
@@ -180,96 +191,44 @@
           displayMessage(this, '新しいリストが作成されました。');
 
         }.bind(this)).catch(console.error);
-
       },
+
       editList (e) {
         editName.call(this, e.target, 'editList');
       },
+
       deleteList (e) {
         const index = parseInt(searchClosestTag(e.target, 'li').dataset.index, 10);
         this.$store.dispatch('deleteList', index).then(function () {
           displayMessage(this, 'リストが正常に削除されました。');
         }.bind(this));
       },
-      submitByEnter (e) {
-        if (e.which !== 13) return;
 
-        // 一番近いsubmitボタンを探す
-        let parent = e.target.parentElement;
-        let submitBtn = parent.querySelector('button');
-
-        while (!submitBtn) {
-          if (!parent) return;
-
-          submitBtn = parent.querySelector('button');
-          parent = parent.parentElement;
-        }
-
-        // フォーカスを外してsubmit
-        e.target.blur();
-        submitBtn.click();
-      }
+      submitByEnter
     },
+
     watch: {
       data: {
         handler (newData, oldData) {
-          createData(newData).then(function (customData) {
+          createData({
+            type: 'list',
+            data: newData
+          }).then(function (customData) {
             this.customData = customData;
           }.bind(this)).catch(console.error);
         },
         deep: true
       }
     },
+
     mounted () {
-      createData(this.data).then(function (customData) {
+      createData({
+        type: 'list',
+        data: this.data
+      }).then(function (customData) {
         this.customData = customData;
       }.bind(this)).catch(console.error);
     }
-  }
-
-  /**
-   * サーバーでリスト画面用にデータを整形する
-   * @param data {Object}
-   * @returns {Promise}
-   */
-  function createData(data) {
-    return new Promise(function (resolve, reject) {
-      post('/api/create-data/list')
-          .send(data)
-          .end(function (err, res) {
-            if (err) {
-              reject(err);
-            } else {
-              resolve(res.body);
-            }
-          });
-    });
-  }
-
-  /**
-   * サーバーで新規リストのバリデーションを行う
-   * @param data {Object}
-   * @param newName {String}
-   * @returns {Promise}
-   */
-  function validateListName(data, newName) {
-    return new Promise(function (resolve, reject) {
-      post('/api/validate/list')
-          .send({
-            data,
-            newName
-          })
-          .end(function (err, res) {
-            if (err) return reject(err);
-
-            const errorMessage = res.text;
-            if (errorMessage) {
-              resolve(errorMessage);
-            } else {
-              resolve(null);
-            }
-          });
-    });
   }
 
   /**

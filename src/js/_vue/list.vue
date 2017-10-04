@@ -53,6 +53,9 @@
     overflow: hidden
     cursor: pointer
     transition all 200ms ease-out
+    &--done
+      background-color: $color-disable
+      color: $color-background
     &:hover
       transform translateY(-5px)
       box-shadow: 5px 5px 10px $color-shadow
@@ -110,7 +113,7 @@
     </transition>
     <ul class="list">
       <li v-for="item in customData" class="list__item" v-bind:data-index="item.index">
-        <div class="listDetail" v-on:click="cassetteLink">
+        <div class="listDetail" v-bind:class="{'listDetail--done': item.todos.total && item.todos.total === item.todos.done}" v-on:click="cassetteLink">
           <p class="listDetail__title">
             <router-link v-bind:to="`/detail/${item.index}`" class="listDetail__title__linkText" data-editTarget>
               {{item.name}}

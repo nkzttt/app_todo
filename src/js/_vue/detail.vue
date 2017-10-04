@@ -13,7 +13,53 @@
     color: $color-sub
 
   .addTodo
+    width: 50%
     margin-bottom 3rem
+    &__input
+      display: flex
+      align-items: center
+      width: 100%
+      margin-bottom 1rem
+      &__label
+        width: 5.25em
+      &__area
+        flex: 1
+    &__choose
+      display: flex
+      align-items: center
+      width: 100%
+      margin-bottom 1rem
+      &__text
+        width: 5.25em
+      &__list
+        flex: 1
+    &__submit
+      padding-left: 5.25em
+
+  .radioSet
+    display: flex
+    width: 100%
+    &__input
+      display none
+    &__label
+      flex: 1
+      padding: 3px 5px 4px
+      border: solid 1px $color-main
+      color: $color-main
+      text-align: center
+      cursor: pointer
+      transition: background-color 200ms ease-out
+      &:hover
+        background-color: rgba(50, 153, 187, 0.1)
+      &:not(:first-of-type)
+        border-left: none
+      &:first-of-type
+        border-radius: 3px 0 0 3px
+      &:last-of-type
+        border-radius: 0 3px 3px 0
+    &__input:checked + &__label
+      background-color: $color-main
+      color: #fff
 
   .message
   .errorMessage
@@ -38,6 +84,9 @@
     background-color: #fff
     box-shadow: 1px 1px 3px $color-shadow
     overflow: hidden
+    &--done
+      background-color: $color-disable
+      color: $color-background
     &__title
       display: flex
       align-items: center
@@ -51,6 +100,26 @@
       &__editText
         display: inline-block
         margin-right 1rem
+    &__limit
+      margin-bottom: 0.5rem
+      &__value
+        font-size: $size-font-secondary
+        font-weight: bold
+    &__status
+      display: flex
+      align-items: center
+      justify-content: center
+      width: 200px
+      height: ($size-font-normal + $size-font-secondary + 0.5rem)
+      position: absolute
+      bottom: 1.5rem
+      right 6.5rem
+      border: solid 1px $color-sub
+      font-size: $size-font-secondary
+      font-weight: bold
+      &--done
+        border-color: $color-background
+        color: $color-background
     &__delete
       width: 5rem
       position: absolute
@@ -72,25 +141,25 @@
   <div class="pageDetail">
     <div class="addTodo">
       <div class="addTodo__input">
-        <label>
-          TODO：
-          <input type="text" placeholder="例）シャンプー買う" v-model="newName" v-on:keypress="submitByEnter" data-addition>
-        </label>
+        <label for="addTodo" class="addTodo__input__label">ＴＯＤＯ：</label>
+        <input type="text" placeholder="例）シャンプー買う" class="addTodo__input__area" id="addTodo" v-model="newName" v-on:keypress="submitByEnter" data-addition>
       </div>
       <div class="addTodo__choose">
-        期限：
-        <label>
-          <input type="radio" name="limit" value="1">あした
-        </label>
-        <label>
-          <input type="radio" name="limit" value="2">あさって
-        </label>
-        <label>
-          <input type="radio" name="limit" value="7">１週間
-        </label>
-        <label>
-          <input type="radio" name="limit" value="0">指定する
-        </label>
+        <p class="addTodo__choose__text">
+          期　　限：
+        </p>
+        <div class="addTodo__choose__list">
+          <div class="radioSet">
+            <input type="radio" name="limit" value="1" class="radioSet__input" id="limit1" checked>
+            <label for="limit1" class="radioSet__label">あした</label>
+            <input type="radio" name="limit" value="2" class="radioSet__input" id="limit2">
+            <label for="limit2" class="radioSet__label">あさって</label>
+            <input type="radio" name="limit" value="7" class="radioSet__input" id="limit3">
+            <label for="limit3" class="radioSet__label">１週間</label>
+            <input type="radio" name="limit" value="0" class="radioSet__input" id="limit4">
+            <label for="limit4" class="radioSet__label">指定する</label>
+          </div>
+        </div>
       </div>
       <p class="addTodo__submit">
         <button v-on:click="addTodo" class="btn btn--primary">TODOの追加</button>
@@ -104,7 +173,7 @@
     </transition>
     <ul class="todos">
       <li v-for="(todo, i) in todos" class="todos__item" v-bind:data-index="i">
-        <div class="todoDetail">
+        <div class="todoDetail" v-bind:class="{'todoDetail--done': todo.isDone}">
           <p class="todoDetail__title">
             <span class="todoDetail__title__text" data-editTarget="">
               {{todo.name}}
@@ -112,6 +181,16 @@
             <input type="text" v-bind:value="todo.name" class="todoDetail__title__editText" data-editor="" style="display: none" v-on:keypress="submitByEnter">
             <button class="todoDetail__title__editBtn btn btn--small btn--secondary" v-on:click="editTodo">編集</button>
           </p>
+          <p class="todoDetail__limit">
+            <span class="todoDetail__limit__heading">期　限：</span>
+            <span class="todoDetail__limit__value" v-text="todo.timeLimit"></span>
+          </p>
+          <p class="todoDetail__created">
+            <span class="todoDetail__created__heading">作成日：</span>
+            <span class="todoDetail__created__value" v-text="todo.timeCreated"></span>
+          </p>
+          <p class="todoDetail__status todoDetail__status--done" v-if="todo.isDone">完了</p>
+          <p class="todoDetail__status" v-if="!todo.isDone">未完了</p>
           <div class="todoDetail__delete">
             <button class="todoDetail__delete__btn" v-on:click="deleteTodo">
               <span class="fa fa-trash-o"></span>

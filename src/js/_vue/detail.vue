@@ -162,7 +162,7 @@
         </div>
       </div>
       <p class="addTodo__submit">
-        <button v-on:click="addTodo" class="btn btn--primary">TODOの追加</button>
+        <button v-on:click="addTodo" class="btn btn--primary">アイテムを追加</button>
       </p>
     </div>
     <transition name="message">
@@ -171,7 +171,10 @@
     <transition name="message">
       <p class="errorMessage" v-text="errorMessage" v-if="errorMessage"></p>
     </transition>
-    <ul class="todos">
+    <p class="errorMessage" v-if="!todos.length">
+      登録されているアイテムがありません。アイテムを追加してください。
+    </p>
+    <ul class="todos" v-if="todos.length">
       <li v-for="(todo, i) in todos" class="todos__item" v-bind:data-index="i">
         <div class="todoDetail" v-bind:class="{'todoDetail--done': todo.isDone}">
           <p class="todoDetail__title">

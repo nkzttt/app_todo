@@ -10,8 +10,10 @@ fixture('system check')
  * チェック項目
  * - リストが追加できる
  * - 新規リストの詳細に遷移でき、TODOアイテムが空である
+ * - 空メッセージが表示されている
  * - TODOアイテムが追加できる
  * - TODOアイテムを追加した際に親リストが先頭にくる
+ * - 空メッセージが消えている
  * - ソート後のリストでも詳細画面に遷移できる
  * - 別リストのTODOアイテムとリンクしていない
  */
@@ -45,6 +47,12 @@ test('check addition flow', async t => {
 
   assert(initialItemsNum === 0);
 
+  // 空メッセージの確認
+  const emptyMessage = '登録されているアイテムがありません。アイテムを追加してください。';
+  const errorMessage = await Selector('.errorMessage').innerText;
+
+  assert(errorMessage.trim() === emptyMessage);
+
   // 新規TODOアイテムの追加
   const newTodoItemName = '新しいアイテム';
   const addItemInput = Selector('.addTodo__input').find('input[type="text"]');
@@ -68,6 +76,10 @@ test('check addition flow', async t => {
   const listLinkMovedToTop = await listLink.nth(0).innerText;
 
   assert(listLinkMovedToTop.trim() === newListName);
+
+  // 空メッセージが消えているか確認
+  const errorMessageNum = await Selector('.errorMessage').count;
+  assert(errorMessageNum === 0);
 
   // 再度新規リスト詳細画面へ遷移し新規TODOアイテムを確認する
   await t

@@ -102,7 +102,7 @@
         <input type="text" placeholder="例）買い物リスト" v-model="newName" v-on:keypress="submitByEnter" data-addition>
       </div>
       <p class="addList__submit">
-        <button class="btn btn--primary" v-on:click="addList">リストの作成</button>
+        <button class="btn btn--primary" v-on:click="addList">リストを追加</button>
       </p>
     </div>
     <transition name="message">
@@ -111,7 +111,10 @@
     <transition name="message">
       <p class="errorMessage" v-text="errorMessage" v-if="errorMessage"></p>
     </transition>
-    <ul class="list">
+    <p class="errorMessage" v-if="!customData.length">
+      登録されているリストがありません。リストを追加してください。
+    </p>
+    <ul class="list" v-if="customData.length">
       <li v-for="item in customData" class="list__item" v-bind:data-index="item.index">
         <div class="listDetail" v-bind:class="{'listDetail--done': item.todos.total && item.todos.total === item.todos.done}" v-on:click="cassetteLink">
           <p class="listDetail__title">
@@ -161,7 +164,7 @@
         errorMessage: null,
         newName: '',
         data: this.$store.state.data,
-        customData: null
+        customData: []
       }
     },
 

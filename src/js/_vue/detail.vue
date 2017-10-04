@@ -12,6 +12,15 @@
   .errorMessage
     color: $color-sub
 
+  .pageDetail
+    position: relative
+
+  .listName
+    position: absolute
+    top: 5px
+    right: 0
+    color: $color-disable
+
   .addTodo
     width: 50%
     margin-bottom 3rem
@@ -84,6 +93,11 @@
     background-color: #fff
     box-shadow: 1px 1px 3px $color-shadow
     overflow: hidden
+    cursor: pointer
+    transition all 200ms ease-out
+    &:hover
+      transform translateY(-5px)
+      box-shadow: 5px 5px 10px $color-shadow
     &--done
       background-color: $color-disable
       color: $color-background
@@ -139,6 +153,7 @@
 
 <template>
   <div class="pageDetail">
+    <p class="listName">【{{listName}}】</p>
     <div class="addTodo">
       <div class="addTodo__input">
         <label for="addTodo" class="addTodo__input__label">ＴＯＤＯ：</label>
@@ -176,13 +191,13 @@
     </p>
     <ul class="todos" v-if="todos.length">
       <li v-for="(todo, i) in todos" class="todos__item" v-bind:data-index="i">
-        <div class="todoDetail" v-bind:class="{'todoDetail--done': todo.isDone}">
+        <div class="todoDetail" v-bind:class="{'todoDetail--done': todo.isDone}" v-on:click="toggleStatus">
           <p class="todoDetail__title">
             <span class="todoDetail__title__text" data-editTarget="">
               {{todo.name}}
             </span>
-            <input type="text" v-bind:value="todo.name" class="todoDetail__title__editText" data-editor="" style="display: none" v-on:keypress="submitByEnter">
-            <button class="todoDetail__title__editBtn btn btn--small btn--secondary" v-on:click="editTodo">編集</button>
+            <input type="text" v-bind:value="todo.name" class="todoDetail__title__editText" data-editor="" style="display: none" v-on:keypress="submitByEnter" v-on:click.stop>
+            <button class="todoDetail__title__editBtn btn btn--small btn--secondary" v-on:click.stop="editTodo">編集</button>
           </p>
           <p class="todoDetail__limit">
             <span class="todoDetail__limit__heading">期　限：</span>
@@ -195,7 +210,7 @@
           <p class="todoDetail__status todoDetail__status--done" v-if="todo.isDone">完了</p>
           <p class="todoDetail__status" v-if="!todo.isDone">未完了</p>
           <div class="todoDetail__delete">
-            <button class="todoDetail__delete__btn" v-on:click="deleteTodo">
+            <button class="todoDetail__delete__btn" v-on:click.stop="deleteTodo">
               <span class="fa fa-trash-o"></span>
             </button>
           </div>
@@ -223,11 +238,20 @@
         errorMessage: null,
         newName: '',
         listIndex,
+        listName: this.$store.state.data[listIndex].name,
         todos: this.$store.state.data[listIndex].todos
       }
     },
 
     methods: {
+      toggleStatus(e) {
+        const index = parseInt(searchClosestTag(e.target, 'li').dataset.index, 10);
+        this.$store
+            .dispatch('toggleTodoStatus', {
+              listIndex: this.listIndex,
+              index: index
+            })
+      },
       addTodo (e) {
         // validate
         validateNewName({

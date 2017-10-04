@@ -53,12 +53,12 @@
     overflow: hidden
     cursor: pointer
     transition all 200ms ease-out
-    &--done
-      background-color: $color-disable
-      color: $color-background
     &:hover
       transform translateY(-5px)
       box-shadow: 5px 5px 10px $color-shadow
+    &--done
+      background-color: $color-disable
+      color: $color-background
     &__title
       display: flex
       align-items: center
@@ -121,7 +121,7 @@
             <router-link v-bind:to="`/detail/${item.index}`" class="listDetail__title__linkText" data-editTarget>
               {{item.name}}
             </router-link>
-            <input type="text" v-bind:value="item.name" class="listDetail__title__editText" data-editor style="display: none" v-on:keypress="submitByEnter">
+            <input type="text" v-bind:value="item.name" class="listDetail__title__editText" data-editor style="display: none" v-on:keypress="submitByEnter" v-on:click.stop>
             <button class="listDetail__title__editBtn btn btn--small btn--secondary" v-on:click.stop="editList">編集</button>
           </p>
           <p class="listDetail__number" v-if="item.todos.total">

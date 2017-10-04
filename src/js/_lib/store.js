@@ -15,13 +15,18 @@ export default {
       data.splice(index, 1)
     },
     addTodo ({data}, {listIndex, todoData}) {
-      data[listIndex].todos.push(todoData);
+      data[listIndex].todos.unshift(todoData);
     },
     editTodo ({data}, {index, listIndex, name}) {
       data[listIndex].todos[index].name = name;
     },
     deleteTodo ({data}, {listIndex, index}) {
       data[listIndex].todos.splice(index, 1)
+    },
+    toggleTodoStatus ({data}, {listIndex, index}) {
+      const target = data[listIndex].todos[index];
+      const isDone = target.isDone;
+      target.isDone = !isDone;
     }
   },
   actions: {
@@ -47,6 +52,9 @@ export default {
     },
     deleteTodo ({commit}, deleteData) {
       commit('deleteTodo', deleteData);
+    },
+    toggleTodoStatus ({commit}, indexData) {
+      commit('toggleTodoStatus', indexData);
     }
   }
 }

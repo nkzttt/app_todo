@@ -23,14 +23,18 @@ module.exports = (postData) => {
       return doneNum;
     })();
 
-    // get nearest limit day, and it format by moment
+    // get oldest limit day, and it format by moment
     additionData.nearestLimit = (() => {
       if (!postData[i].todos.length) return null;
 
-      const days = postData[i].todos.map(({timeLimit}) => {
-        return parseInt(timeLimit, 10);
+      const days = [];
+
+      // ignore todoItem if isDone property is true
+      postData[i].todos.forEach(({timeLimit, isDone}) => {
+        if (!isDone) days.push(timeLimit);
       });
-      const maxDayNum = Math.max.apply(null, days);
+
+      const maxDayNum = Math.min.apply(null, days);
       return moment(maxDayNum + '').format('YYYY年MM月DD日');
     })();
 
@@ -38,8 +42,8 @@ module.exports = (postData) => {
     additionData.newestTodoNum = (() => {
       if (!postData[i].todos.length) return 0;
 
-      const days = postData[i].todos.map(({timeLimit}) => {
-        return parseInt(timeLimit, 10);
+      const days = postData[i].todos.map(({timeCreated}) => {
+        return parseInt(timeCreated, 10);
       });
       return Math.max.apply(null, days);
     })();

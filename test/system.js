@@ -15,6 +15,8 @@ fixture('system check')
  * - TODOアイテムを追加した際に親リストが先頭にくる
  * - 空メッセージが消えている
  * - ソート後のリストでも詳細画面に遷移できる
+ * - TODOアイテムのステータスを変更でき、非活性ビジュアルになる
+ * - 全てのTODOアイテムがdoneになった場合に親リストが非活性ビジュアルになる
  * - 別リストのTODOアイテムとリンクしていない
  */
 test('check addition flow', async t => {
@@ -39,7 +41,9 @@ test('check addition flow', async t => {
   // 新規リストの詳細画面へ遷移
   const newListLink = listLink.nth(currentLinkNum - 1);
 
-  await t.click(newListLink);
+  await t
+    .click(newListLink)
+    .wait(500);
 
   // アイテムがないことの確認
   const todoItems = Selector('.todos').child('li');
@@ -67,11 +71,12 @@ test('check addition flow', async t => {
 
   assert(currentItemsNum === initialItemsNum + 1);
 
-  // リスト画面へ戻り親リストが先頭になっていることの確認
+  // リスト画面へ戻り、親リストが先頭になっていることの確認
   const topLink = Selector('.siteLogo');
 
   await t
-    .click(topLink);
+    .click(topLink)
+    .wait(500);
 
   const listLinkMovedToTop = await listLink.nth(0).innerText;
 
@@ -83,17 +88,32 @@ test('check addition flow', async t => {
 
   // 再度新規リスト詳細画面へ遷移し新規TODOアイテムを確認する
   await t
-    .click(listLink.nth(0));
+    .click(listLink.nth(0))
+    .wait(500);
 
   const newTodoItem = await Selector('.todoDetail__title__text').nth(0).innerText;
 
   assert(newTodoItem.trim() === newTodoItemName);
 
+  // アイテムのステータスを変更し、doneクラスを確認する
+  await t
+    .click(todoItems.nth(0));
+
+  const hasTodoDoneClass = await todoItems.nth(0).child('div').hasClass('todoDetail--done');
+  assert(hasTodoDoneClass);
+
+  // リスト画面へ戻り、親リストのdoneクラスを確認する
+  await t
+    .click(topLink)
+    .wait(500);
+
+  const hasListDoneClass = await listLink.nth(0).parent('.listDetail').hasClass('listDetail--done');
+  assert(hasListDoneClass);
 
   // 別リストの詳細画面へ遷移
   await t
-    .click(topLink)
-    .click(listLink.nth(1));
+    .click(listLink.nth(1))
+    .wait(500);
 
   // 上で追加したアイテムが存在しないことの確認
   const otherTodoItemTitles = Selector('.todoDetail__title__text');

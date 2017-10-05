@@ -1,6 +1,16 @@
 <style scoped lang="stylus">
   @import '../../css/_variables/*'
   @import '../../css/_mixins/*'
+
+  .contentsFade-enter-active
+  .contentsFade-leave-active
+    transition: opacity .15s linear, transform .15s ease-in
+  .contentsFade-enter
+  .contentsFade-leave-to
+    opacity: 0
+    transform: translateY(10px)
+  .contentsFade-enter-active
+    transition-delay: .3s
 </style>
 
 <template>
@@ -25,7 +35,9 @@
     </div>
     <div class="main">
       <div class="main__insideContainer">
-        <router-view></router-view>
+        <transition name="contentsFade">
+          <router-view></router-view>
+        </transition>
       </div>
     </div>
   </div>

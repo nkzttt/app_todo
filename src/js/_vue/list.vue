@@ -9,9 +9,6 @@
   .fade-leave-to
     opacity: 0
 
-  .errorMessage
-    color: $color-sub
-
   .addList
     display: table
     width: 50%

@@ -18,9 +18,6 @@
   .fade-leave-to
     opacity: 0
 
-  .errorMessage
-    color: $color-sub
-
   .pageDetail
     position: relative
 

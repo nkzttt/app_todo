@@ -3,6 +3,7 @@ const router = require('koa-router')();
 // require api modules
 const createDataList = require('../api/create-data-list');
 const validateList = require('../api/validate-list');
+const search = require('../api/search');
 
 // api test
 router.post('/', async function (ctx, next) {
@@ -29,6 +30,11 @@ router.post('/validate/item', async function (ctx, next) {
   }
 
   ctx.body = errorMessage;
+});
+
+// search
+router.post('/search', async function (ctx, next) {
+  ctx.body = search(ctx.request.body);
 });
 
 module.exports = router;

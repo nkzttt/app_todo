@@ -133,11 +133,11 @@ function createData({type, data}) {
   return new Promise(function (resolve, reject) {
     post(`/api/create-data/${type}`)
       .send(data)
-      .end(function (err, res) {
+      .end(function (err, {body}) {
         if (err) {
           reject(err);
         } else {
-          resolve(res.body);
+          resolve(body);
         }
       });
   });

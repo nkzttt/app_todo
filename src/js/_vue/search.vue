@@ -54,11 +54,13 @@
 
   .message
   .errorMessage
-    margin-bottom 1.5rem
+    margin -4.5rem 0 6rem
     padding: 5px 1rem 6px
     border-radius: 3px
     border: solid 1px $color-main
     color: $color-main
+    &--result
+      margin 0 0 1.5rem
   .errorMessage
     border-color: $color-sub
     color: $color-sub
@@ -110,7 +112,7 @@
   <div class="pageSearch">
     <div class="search">
       <div class="search__input">
-        <input type="text" placeholder="例）買い物" v-model="newName" v-on:keypress="submitByEnter" data-addition>
+        <input type="text" placeholder="例）買い物" v-model="searchStr" v-on:keypress="submitByEnter" data-search>
       </div>
       <p class="search__check">
         <input type="checkbox" id="ignoreDoneItem">
@@ -127,17 +129,22 @@
         </button>
       </p>
     </div>
-    <p class="message" v-if="hits.todos">
+    <transition name="fade">
+      <p class="errorMessage" v-text="errorMessage" v-if="errorMessage"></p>
+    </transition>
+    <p class="message message--result" v-if="hits && hits.todos">
       アイテムが
       <span class="message__hits">{{hits.todos}}件</span>
-      見つかりました
+      見つかりました。
     </p>
-    <p class="errorMessage" v-text="errorMessages.todos" v-if="errorMessages.todos"></p>
-    <ul class="results" v-if="results.todos.length">
+    <p class="errorMessage errorMessage--result" v-if="hits && !hits.todos">
+      アイテムが見つかりませんでした。
+    </p>
+    <ul class="results" v-if="results && results.todos.length">
       <li v-for="todo in results.todos" class="results__item">
         <div class="todoDetail" v-on:click="cassetteLink">
           <p class="todoDetail__title">
-            <router-link v-bind:to="`/detail/${todo.listIndex}`" class="listDetail__title__linkText" data-editTarget>
+            <router-link v-bind:to="`/detail/${todo.listIndex}`" class="listDetail__title__linkText">
               {{todo.name}}
             </router-link>
           </p>
@@ -152,13 +159,15 @@
         </div>
       </li>
     </ul>
-    <p class="message" v-if="hits.list">
+    <p class="message message--result" v-if="hits && hits.list">
       アイテムが
       <span class="message__hits">{{hits.list}}件</span>
-      見つかりました
+      見つかりました。
     </p>
-    <p class="errorMessage" v-text="errorMessages.list" v-if="errorMessages.list"></p>
-    <ul class="results" v-if="results.list.length">
+    <p class="errorMessage errorMessage--result" v-if="hits && !hits.list">
+      リストが見つかりませんでした。
+    </p>
+    <ul class="results" v-if="results && results.list.length">
       <li v-for="item in results.list" class="results__item">
         <div class="listDetail" v-on:click="cassetteLink">
           <p class="listDetail__title">
@@ -184,42 +193,24 @@
       handleError
   } from '../_util/methods';
 
+  import {post} from 'superagent';
+
   export default {
     data () {
       return {
-        hits: {
-          list: 1,
-          todos: 2
-//          list: null,
-//          todos: null
-        },
-        errorMessages: {
-          list: null,
-          todos: null
-        },
-        results: {
-          list: [
-            {
-              name: 'やることリスト',
-              timeCreated: '20000901'
-            }
-          ],
-          todos: [
-            {
-              listIndex: 0,
-              name: 'やること１',
-              "timeCreated": "20000921",
-              "timeLimit": "20000930"
-            },
-            {
-              listIndex: 0,
-              name: 'やること２',
-              "timeCreated": "20000921",
-              "timeLimit": "20000930"
-            }
-          ]
-//          list: [],
-//          todos: []
+        searchStr: '',
+        errorMessage: null,
+        results: null
+      }
+    },
+
+    computed: {
+      hits() {
+        if (!this.results) return null;
+
+        return {
+          list: this.results.list.length,
+          todos: this.results.todos.length
         }
       }
     },
@@ -229,10 +220,43 @@
         e.currentTarget.querySelector('a').click();
       },
 
-      search (e) {},
+      search (e) {
+        const err = simpleValidate(this.searchStr);
+        if (err) {
+          displayMessage(this, err, 'errorMessage');
+          this.$el.querySelector('[data-search]').focus();
+          return;
+        }
+
+        post(`/api/search`)
+            .send({
+              data: this.$store.state.data,
+              searchStr: this.searchStr
+            })
+            .end(function (err, {body}) {
+              if (err) {
+                handleError(err);
+              } else {
+                this.results = body;
+              }
+            }.bind(this));
+      },
 
       transformDateString,
       submitByEnter
     }
+  }
+
+  /**
+   *
+   * @param str
+   * @returns {String | null} - return String if have get error.
+   */
+  function simpleValidate(str) {
+    if (str.length < 2) {
+      return '検索文字数は２文字以上にしてください。'
+    }
+
+    return null;
   }
 </script>

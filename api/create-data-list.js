@@ -34,6 +34,9 @@ module.exports = (postData) => {
         if (!isDone) days.push(timeLimit);
       });
 
+      // if all todoItems is done, return null.
+      if (!days.length) return null;
+
       const maxDayNum = Math.min.apply(null, days);
       return moment(maxDayNum + '').format('YYYY年MM月DD日');
     })();

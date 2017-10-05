@@ -2,6 +2,15 @@
   @import '../../css/_variables/*'
   @import '../../css/_mixins/*'
 
+  .slideCalendar-enter-active
+  .slideCalendar-leave-active
+    max-height: 300px
+    overflow: hidden
+    transition: max-height .3s ease-out
+  .slideCalendar-enter
+  .slideCalendar-leave-to
+    max-height: 0
+
   .fade-enter-active
   .fade-leave-active
     transition: opacity .3s
@@ -132,7 +141,7 @@
         <label for="addTodo" class="addTodo__input__label">ＴＯＤＯ：</label>
         <input type="text" placeholder="例）シャンプー買う" class="addTodo__input__area" id="addTodo" v-model="newName" v-on:keypress="submitByEnter" data-addition>
       </div>
-      <transition name="fade">
+      <transition name="slideCalendar">
         <div class="addTodo__choose" v-if="newName">
           <p class="addTodo__choose__text">
             期　　限：
@@ -172,11 +181,11 @@
           </p>
           <p class="todoDetail__limit">
             <span class="todoDetail__limit__heading">期　限：</span>
-            <span class="todoDetail__limit__value" v-text="todo.timeLimit"></span>
+            <span class="todoDetail__limit__value" v-text="transformDateString(todo.timeLimit)"></span>
           </p>
           <p class="todoDetail__created">
             <span class="todoDetail__created__heading">作成日：</span>
-            <span class="todoDetail__created__value" v-text="todo.timeCreated"></span>
+            <span class="todoDetail__created__value" v-text="transformDateString(todo.timeCreated)"></span>
           </p>
           <p class="todoDetail__status todoDetail__status--done" v-if="todo.isDone">完了</p>
           <p class="todoDetail__status" v-if="!todo.isDone">未完了</p>
@@ -247,6 +256,7 @@
               index: index
             })
       },
+
       addTodo (e) {
         // validate
         validateNewName({
@@ -302,6 +312,7 @@
         });
       },
 
+      transformDateString,
       submitByEnter
     }
   }
@@ -331,5 +342,17 @@
     date = date.length === 2 ? date : '0' + date;
 
     return year + month + date;
+  }
+
+  /**
+   * YYYYMMDD形式の文字列をYYYY年MM月DD日形式にして返す
+   * @param dateString
+   * @returns {*}
+   */
+  function transformDateString(dateString) {
+    const year = dateString.substr(0,4);
+    const month = dateString.substr(4,2);
+    const date = dateString.substr(-2);
+    return `${year}年${month}月${date}日`;
   }
 </script>

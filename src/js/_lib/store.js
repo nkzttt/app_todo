@@ -30,8 +30,8 @@ export default {
     }
   },
   actions: {
-    addList ({commit}, listName) {
-      const listData = createNewList(listName);
+    addList ({commit}, newData) {
+      const listData = createNewList(newData);
       commit('addList', listData);
     },
     editList ({commit}, editData) {
@@ -59,17 +59,18 @@ export default {
   }
 }
 
-function createNewList(name) {
+function createNewList({listName, createdDate}) {
   return {
-    name,
-    todos: []
+    name: listName,
+    todos: [],
+    timeCreated: createdDate,
   }
 }
 
-function createNewTodo({todoName, createDate, limitDate}) {
+function createNewTodo({todoName, createdDate, limitDate}) {
   return {
     name: todoName,
-    timeCreated: createDate,
+    timeCreated: createdDate,
     timeLimit: limitDate,
     isDone: false
   }

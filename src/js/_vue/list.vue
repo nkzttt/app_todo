@@ -148,6 +148,7 @@
       editName,
       submitByEnter,
       createData,
+      createDateString,
       transformDateString,
       validateNewName,
       handleError
@@ -185,7 +186,10 @@
           }
 
           this.$store
-              .dispatch('addList', this.newName)
+              .dispatch('addList', {
+                listName: this.newName,
+                createdDate: createDateString(new Date),
+              })
               .then(function () {
                 displayMessage(this, '新しいリストが作成されました。');
 

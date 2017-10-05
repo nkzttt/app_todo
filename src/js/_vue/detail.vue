@@ -277,7 +277,7 @@
               .dispatch('addTodo', {
                 listIndex: this.listIndex,
                 todoName: this.newName,
-                createDate: createDateString(new Date),
+                createdDate: createDateString(new Date),
                 limitDate: createDateString(this.choseDate)
               })
               .then(function () {

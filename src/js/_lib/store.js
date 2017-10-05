@@ -40,10 +40,10 @@ export default {
     deleteList ({commit}, index) {
       commit('deleteList', index);
     },
-    addTodo ({commit}, {listIndex, todoName}) {
-      const todoData = createNewTodo(todoName);
+    addTodo ({commit}, newData) {
+      const todoData = createNewTodo(newData);
       commit('addTodo', {
-        listIndex,
+        listIndex: newData.listIndex,
         todoData
       });
     },
@@ -66,11 +66,11 @@ function createNewList(name) {
   }
 }
 
-function createNewTodo(name) {
+function createNewTodo({todoName, createDate, limitDate}) {
   return {
-    name,
-    timeCreated: "20010921",
-    timeLimit: "20010930",
+    name: todoName,
+    timeCreated: createDate,
+    timeLimit: limitDate,
     isDone: false
   }
 }

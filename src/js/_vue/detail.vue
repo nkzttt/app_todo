@@ -2,11 +2,11 @@
   @import '../../css/_variables/*'
   @import '../../css/_mixins/*'
 
-  .message-enter-active
-  .message-leave-active
+  .fade-enter-active
+  .fade-leave-active
     transition: opacity .3s
-  .message-enter
-  .message-leave-to
+  .fade-enter
+  .fade-leave-to
     opacity: 0
 
   .errorMessage
@@ -35,40 +35,13 @@
         flex: 1
     &__choose
       display: flex
-      align-items: center
+      align-items: top
       width: 100%
       margin-bottom 1rem
       &__text
         width: 5.25em
-      &__list
-        flex: 1
     &__submit
       padding-left: 5.25em
-
-  .radioSet
-    display: flex
-    width: 100%
-    &__input
-      display none
-    &__label
-      flex: 1
-      padding: 3px 5px 4px
-      border: solid 1px $color-main
-      color: $color-main
-      text-align: center
-      cursor: pointer
-      transition: background-color 200ms ease-out
-      &:hover
-        background-color: rgba(50, 153, 187, 0.1)
-      &:not(:first-of-type)
-        border-left: none
-      &:first-of-type
-        border-radius: 3px 0 0 3px
-      &:last-of-type
-        border-radius: 0 3px 3px 0
-    &__input:checked + &__label
-      background-color: $color-main
-      color: #fff
 
   .message
   .errorMessage
@@ -159,31 +132,29 @@
         <label for="addTodo" class="addTodo__input__label">ＴＯＤＯ：</label>
         <input type="text" placeholder="例）シャンプー買う" class="addTodo__input__area" id="addTodo" v-model="newName" v-on:keypress="submitByEnter" data-addition>
       </div>
-      <div class="addTodo__choose">
-        <p class="addTodo__choose__text">
-          期　　限：
-        </p>
-        <div class="addTodo__choose__list">
-          <div class="radioSet">
-            <input type="radio" name="limit" value="1" class="radioSet__input" id="limit1" checked>
-            <label for="limit1" class="radioSet__label">あした</label>
-            <input type="radio" name="limit" value="2" class="radioSet__input" id="limit2">
-            <label for="limit2" class="radioSet__label">あさって</label>
-            <input type="radio" name="limit" value="7" class="radioSet__input" id="limit3">
-            <label for="limit3" class="radioSet__label">１週間</label>
-            <input type="radio" name="limit" value="0" class="radioSet__input" id="limit4">
-            <label for="limit4" class="radioSet__label">指定する</label>
+      <transition name="fade">
+        <div class="addTodo__choose" v-if="newName">
+          <p class="addTodo__choose__text">
+            期　　限：
+          </p>
+          <div class="addTodo__choose__calendar">
+            <date-picker
+                v-model="choseDate"
+                v-bind:inline="DPOptions.inline"
+                v-bind:disabled="DPOptions.disabled"
+                language="ja"
+            ></date-picker>
           </div>
         </div>
-      </div>
+      </transition>
       <p class="addTodo__submit">
         <button v-on:click="addTodo" class="btn btn--primary">アイテムを追加</button>
       </p>
     </div>
-    <transition name="message">
+    <transition name="fade">
       <p class="message" v-text="message" v-if="message"></p>
     </transition>
-    <transition name="message">
+    <transition name="fade">
       <p class="errorMessage" v-text="errorMessage" v-if="errorMessage"></p>
     </transition>
     <p class="errorMessage" v-if="!todos.length">
@@ -229,6 +200,24 @@
       validateNewName
   } from '../_util/methods';
 
+  import datePicker from 'vuejs-datepicker';
+  const DPOptions = {
+    inline: true,
+    disabled: {
+      to: (function() {
+        const d = new Date();
+        d.setDate(d.getDate() - 1);
+        return d;
+      })(),
+      from: (function() {
+        const d = new Date();
+        d.setFullYear(d.getFullYear() + 1);
+        d.setDate(d.getDate() - 1);
+        return d;
+      })()
+    }
+  };
+
   export default {
     data () {
       const listIndex = parseInt(this.$route.params.index, 10);
@@ -239,8 +228,14 @@
         newName: '',
         listIndex,
         listName: this.$store.state.data[listIndex].name,
-        todos: this.$store.state.data[listIndex].todos
+        todos: this.$store.state.data[listIndex].todos,
+        choseDate: new Date(),
+        DPOptions
       }
+    },
+
+    components: {
+      'date-picker': datePicker
     },
 
     methods: {
@@ -270,13 +265,16 @@
           this.$store
               .dispatch('addTodo', {
                 listIndex: this.listIndex,
-                todoName: this.newName
+                todoName: this.newName,
+                createDate: createDateString(new Date),
+                limitDate: createDateString(this.choseDate)
               })
               .then(function () {
-                this.newName = '';
-              }.bind(this));
+                displayMessage(this, '新しいアイテムが作成されました。');
 
-          displayMessage(this, '新しいアイテムが作成されました。');
+                this.newName = '';
+                this.choseDate = new Date();
+              }.bind(this));
 
         }.bind(this)).catch(console.error);
       },
@@ -318,5 +316,20 @@
     setTimeout(function () {
       vm[target] = null;
     }, 3000);
+  }
+
+  /**
+   * DateオブジェクトからYYYYMMDD形式の文字列を作成して返す
+   * @param Date {Date}
+   * @returns {String}
+   */
+  function createDateString(Date) {
+    let year = Date.getFullYear() + '';
+    let month = Date.getMonth() + 1 + '';
+    month = month.length === 2 ? month : '0' + month;
+    let date = Date.getDate() + '';
+    date = date.length === 2 ? date : '0' + date;
+
+    return year + month + date;
   }
 </script>

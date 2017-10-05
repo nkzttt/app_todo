@@ -2,11 +2,11 @@
   @import '../../css/_variables/*'
   @import '../../css/_mixins/*'
 
-  .message-enter-active
-  .message-leave-active
+  .fade-enter-active
+  .fade-leave-active
     transition: opacity .3s
-  .message-enter
-  .message-leave-to
+  .fade-enter
+  .fade-leave-to
     opacity: 0
 
   .errorMessage
@@ -105,10 +105,10 @@
         <button class="btn btn--primary" v-on:click="addList">リストを追加</button>
       </p>
     </div>
-    <transition name="message">
+    <transition name="fade">
       <p class="message" v-text="message" v-if="message"></p>
     </transition>
-    <transition name="message">
+    <transition name="fade">
       <p class="errorMessage" v-text="errorMessage" v-if="errorMessage"></p>
     </transition>
     <p class="errorMessage" v-if="!customData.length">
@@ -191,10 +191,10 @@
           this.$store
               .dispatch('addList', this.newName)
               .then(function () {
+                displayMessage(this, '新しいリストが作成されました。');
+
                 this.newName = '';
               }.bind(this));
-
-          displayMessage(this, '新しいリストが作成されました。');
 
         }.bind(this)).catch(console.error);
       },

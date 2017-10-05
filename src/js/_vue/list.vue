@@ -99,10 +99,10 @@
       </p>
     </div>
     <transition name="fade">
-      <p class="message" v-text="message" v-if="message"></p>
+      <p class="errorMessage" v-text="errorMessage" v-if="errorMessage"></p>
     </transition>
     <transition name="fade">
-      <p class="errorMessage" v-text="errorMessage" v-if="errorMessage"></p>
+      <p class="message" v-text="message" v-if="message"></p>
     </transition>
     <p class="errorMessage" v-if="!customData.length">
       登録されているリストがありません。リストを追加してください。
@@ -128,7 +128,7 @@
             個がチェック済み
           </p>
           <p class="listDetail__nearestLimit" v-if="item.nearestLimit">
-            〜{{item.nearestLimit}}
+            〜{{transformDateString(item.nearestLimit)}}
           </p>
           <div class="listDetail__delete">
             <button class="listDetail__delete__btn" v-on:click.stop="deleteList">
@@ -143,10 +143,12 @@
 
 <script>
   import {
+      displayMessage,
       searchClosestTag,
       editName,
       submitByEnter,
       createData,
+      transformDateString,
       validateNewName,
       handleError
   } from '../_util/methods';
@@ -214,6 +216,7 @@
         }.bind(this));
       },
 
+      transformDateString,
       submitByEnter
     },
 
@@ -239,17 +242,5 @@
         this.customData = customData;
       }.bind(this)).catch(handleError);
     }
-  }
-
-  /**
-   * メッセージ表示と一定時間で非表示
-   * @param vm {Object} - vueインスタンス
-   * @param message {String}
-   */
-  function displayMessage(vm, message, target='message') {
-    vm[target] = message;
-    setTimeout(function () {
-      vm[target] = null;
-    }, 3000);
   }
 </script>

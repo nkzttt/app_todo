@@ -178,11 +178,9 @@
 
 <script>
   import {
-      searchClosestTag,
-      editName,
+      displayMessage,
       submitByEnter,
-      createData,
-      validateNewName,
+      transformDateString,
       handleError
   } from '../_util/methods';
 
@@ -236,29 +234,5 @@
       transformDateString,
       submitByEnter
     }
-  }
-
-  /**
-   * メッセージ表示と一定時間で非表示
-   * @param vm {Object} - vueインスタンス
-   * @param message {String}
-   */
-  function displayMessage(vm, message, target='message') {
-    vm[target] = message;
-    setTimeout(function () {
-      vm[target] = null;
-    }, 3000);
-  }
-
-  /**
-   * YYYYMMDD形式の文字列をYYYY年MM月DD日形式にして返す
-   * @param dateString
-   * @returns {*}
-   */
-  function transformDateString(dateString) {
-    const year = dateString.substr(0,4);
-    const month = dateString.substr(4,2);
-    const date = dateString.substr(-2);
-    return `${year}年${month}月${date}日`;
   }
 </script>

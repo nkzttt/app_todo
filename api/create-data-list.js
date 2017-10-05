@@ -23,7 +23,7 @@ module.exports = (postData) => {
       return doneNum;
     })();
 
-    // get oldest limit day, and it format by moment
+    // get oldest limit day
     additionData.nearestLimit = (() => {
       if (!postData[i].todos.length) return null;
 
@@ -37,8 +37,8 @@ module.exports = (postData) => {
       // if all todoItems is done, return null.
       if (!days.length) return null;
 
-      const maxDayNum = Math.min.apply(null, days);
-      return moment(maxDayNum + '').format('YYYY年MM月DD日');
+      // return string
+      return Math.min.apply(null, days) + '';
     })();
 
     // get newest todoItem for sort

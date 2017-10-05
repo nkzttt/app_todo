@@ -1,4 +1,18 @@
 import {post} from 'superagent';
+import moment from 'moment';
+moment.locale('ja');
+
+/**
+ * メッセージ表示と一定時間で非表示
+ * @param vm {Object} - vueインスタンス
+ * @param message {String}
+ */
+function displayMessage(vm, message, target='message') {
+  vm[target] = message;
+  setTimeout(function () {
+    vm[target] = null;
+  }, 3000);
+}
 
 /**
  * 最も近くの要素をタグで検索
@@ -156,6 +170,28 @@ function validateNewName({type, data, newName}) {
   });
 }
 
+/**
+ * DateオブジェクトからYYYYMMDD形式の文字列を作成して返す
+ * @param Date {Date}
+ * @returns {String}
+ */
+function createDateString(Date) {
+  return moment(Date).format('YYYYMMDD');
+}
+
+/**
+ * YYYYMMDD形式の文字列をYYYY年MM月DD日形式にして返す
+ * @param dateString
+ * @returns {*}
+ */
+function transformDateString(dateString) {
+  return moment(dateString).format('YYYY年MM月DD日');
+}
+
+/**
+ *
+ * @param err
+ */
 function handleError(err) {
   console.error(err);
   alert('サーバーエラーが発生しました。通信環境をお確かめください。通信環境に問題がない場合は、お手数ですがサーバー管理者にご連絡ください。');
@@ -163,10 +199,13 @@ function handleError(err) {
 
 // methods export
 export {
+  displayMessage,
   searchClosestTag,
   editName,
   submitByEnter,
   createData,
   validateNewName,
+  createDateString,
+  transformDateString,
   handleError
 }

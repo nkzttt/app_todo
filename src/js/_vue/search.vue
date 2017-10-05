@@ -10,24 +10,51 @@
     opacity: 0
 
   .search
-    display: table
+    display: flex
     width: 50%
-    margin-bottom 3rem
+    position: relative
+    margin-bottom 6rem
+    padding-bottom: ($size-font-small + 1rem)
     align-items: center
     &__input
-    &__submit
-      display: table-cell
-    &__input
-      width: 100%
+      flex: 1
       padding-right 1rem
       > input
         width: 100%
-    &__submit
-      white-space nowrap
+    &__check
+      position: absolute
+      bottom: 0
+      left: 0
+      font-size: $size-font-small
+      > input
+        display: none
+        + label
+          color: $color-disable
+          transition: color .1s linear
+          > .checked
+            display: none
+        &:checked + label
+          color: $color-font
+          > .disabled
+            display: none
+          > .checked
+            display: inline-block
+            color: $color-main
+
+  .checkLabel
+    display: inline-block
+    position: relative
+    padding-left: 2rem
+    &__icon
+      display: inline-block
+      position: absolute
+      top: -0.2rem
+      left: 0
+      font-size: $size-font-normal
 
   .message
   .errorMessage
-    margin -1.5rem 0 3rem
+    margin-bottom 1.5rem
     padding: 5px 1rem 6px
     border-radius: 3px
     border: solid 1px $color-main
@@ -36,7 +63,15 @@
     border-color: $color-sub
     color: $color-sub
 
+  .message
+    &__hits
+      display: inline-block
+      font-weight: bold
+      letter-spacing: 0.25em
+      text-indent: @letter-spacing
+
   .results
+    margin-bottom: 6rem
     &__item + &__item
       margin-top: 1.5rem
 
@@ -79,8 +114,10 @@
       </div>
       <p class="search__check">
         <input type="checkbox" id="ignoreDoneItem">
-        <label for="ignoreDoneItem">
-          完了しているTODOリスト、アイテムを検索対象外にする
+        <label for="ignoreDoneItem" class="checkLabel">
+          <span class="fa fa-square-o disabled checkLabel__icon"></span>
+          <span class="fa fa-check-square-o checked checkLabel__icon"></span>
+          完了しているTODOリスト・アイテムを検索対象外にする
         </label>
       </p>
       <p class="search__submit">
@@ -90,7 +127,36 @@
         </button>
       </p>
     </div>
-    <p class="message" v-text="messages.list" v-if="messages.list"></p>
+    <p class="message" v-if="hits.todos">
+      アイテムが
+      <span class="message__hits">{{hits.todos}}件</span>
+      見つかりました
+    </p>
+    <p class="errorMessage" v-text="errorMessages.todos" v-if="errorMessages.todos"></p>
+    <ul class="results" v-if="results.todos.length">
+      <li v-for="todo in results.todos" class="results__item">
+        <div class="todoDetail" v-on:click="cassetteLink">
+          <p class="todoDetail__title">
+            <router-link v-bind:to="`/detail/${todo.listIndex}`" class="listDetail__title__linkText" data-editTarget>
+              {{todo.name}}
+            </router-link>
+          </p>
+          <p class="todoDetail__limit">
+            <span class="todoDetail__limit__heading">期　限：</span>
+            <span class="todoDetail__limit__value" v-text="transformDateString(todo.timeLimit)"></span>
+          </p>
+          <p class="todoDetail__created">
+            <span class="todoDetail__created__heading">作成日：</span>
+            <span class="todoDetail__created__value" v-text="transformDateString(todo.timeCreated)"></span>
+          </p>
+        </div>
+      </li>
+    </ul>
+    <p class="message" v-if="hits.list">
+      アイテムが
+      <span class="message__hits">{{hits.list}}件</span>
+      見つかりました
+    </p>
     <p class="errorMessage" v-text="errorMessages.list" v-if="errorMessages.list"></p>
     <ul class="results" v-if="results.list.length">
       <li v-for="item in results.list" class="results__item">
@@ -103,27 +169,6 @@
           <p class="listDetail__created">
             <span class="listDetail__created__heading">作成日：</span>
             <span class="listDetail__created__value" v-text="transformDateString(item.timeCreated)"></span>
-          </p>
-        </div>
-      </li>
-    </ul>
-    <p class="message" v-text="messages.todos" v-if="messages.todos"></p>
-    <p class="errorMessage" v-text="errorMessages.todos" v-if="errorMessages.todos"></p>
-    <ul class="results" v-if="results.todos.length">
-      <li v-for="todo in results.todos" class="results__item" v-bind:data-index="todo.index">
-        <div class="todoDetail" v-on:click="cassetteLink">
-          <p class="todoDetail__title">
-            <router-link v-bind:to="`/detail/${todo.index}`" class="listDetail__title__linkText" data-editTarget>
-              {{todo.name}}
-            </router-link>
-          </p>
-          <p class="todoDetail__limit">
-            <span class="todoDetail__limit__heading">期　限：</span>
-            <span class="todoDetail__limit__value" v-text="transformDateString(todo.timeLimit)"></span>
-          </p>
-          <p class="todoDetail__created">
-            <span class="todoDetail__created__heading">作成日：</span>
-            <span class="todoDetail__created__value" v-text="transformDateString(todo.timeCreated)"></span>
           </p>
         </div>
       </li>
@@ -144,17 +189,39 @@
   export default {
     data () {
       return {
-        messages: {
-          list: null,
-          todos: null
+        hits: {
+          list: 1,
+          todos: 2
+//          list: null,
+//          todos: null
         },
         errorMessages: {
           list: null,
           todos: null
         },
         results: {
-          list: [],
-          todos: []
+          list: [
+            {
+              name: 'やることリスト',
+              timeCreated: '20000901'
+            }
+          ],
+          todos: [
+            {
+              listIndex: 0,
+              name: 'やること１',
+              "timeCreated": "20000921",
+              "timeLimit": "20000930"
+            },
+            {
+              listIndex: 0,
+              name: 'やること２',
+              "timeCreated": "20000921",
+              "timeLimit": "20000930"
+            }
+          ]
+//          list: [],
+//          todos: []
         }
       }
     },
@@ -166,6 +233,7 @@
 
       search (e) {},
 
+      transformDateString,
       submitByEnter
     }
   }

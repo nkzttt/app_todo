@@ -29,7 +29,7 @@
 
   .addTodo
     width: 50%
-    margin-bottom 3rem
+    margin-bottom 6rem
     &__input
       display: flex
       align-items: center
@@ -51,12 +51,13 @@
 
   .message
   .errorMessage
-    margin -1.5rem 0 3rem
+    margin-bottom 1.5rem
     padding: 5px 1rem 6px
     border-radius: 3px
     border: solid 1px $color-main
     color: $color-main
   .errorMessage
+    margin -4.5rem 0 6rem
     border-color: $color-sub
     color: $color-sub
 

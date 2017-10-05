@@ -10,29 +10,25 @@
     opacity: 0
 
   .addList
-    display: table
+    display: flex
     width: 50%
-    margin-bottom 3rem
+    margin-bottom 6rem
     align-items: center
     &__input
-    &__submit
-      display: table-cell
-    &__input
-      width: 100%
+      flex: 1
       padding-right 1rem
       > input
         width: 100%
-    &__submit
-      white-space nowrap
 
   .message
   .errorMessage
-    margin -1.5rem 0 3rem
+    margin-bottom 1.5rem
     padding: 5px 1rem 6px
     border-radius: 3px
     border: solid 1px $color-main
     color: $color-main
   .errorMessage
+    margin -4.5rem 0 6rem
     border-color: $color-sub
     color: $color-sub
 

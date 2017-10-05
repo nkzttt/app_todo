@@ -206,7 +206,8 @@
       editName,
       submitByEnter,
       createData,
-      validateNewName
+      validateNewName,
+      handleError
   } from '../_util/methods';
 
   import datePicker from 'vuejs-datepicker';
@@ -286,7 +287,7 @@
                 this.choseDate = new Date();
               }.bind(this));
 
-        }.bind(this)).catch(console.error);
+        }.bind(this)).catch(handleError);
       },
 
       editTodo (e) {
@@ -301,7 +302,7 @@
 
           displayMessage(this, res.errorMessage, 'errorMessage');
           res.input.focus();
-        }.bind(this)).catch(console.error);
+        }.bind(this)).catch(handleError);
       },
 
       deleteTodo (e) {

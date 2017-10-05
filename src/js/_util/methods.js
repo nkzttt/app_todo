@@ -156,11 +156,17 @@ function validateNewName({type, data, newName}) {
   });
 }
 
+function handleError(err) {
+  console.error(err);
+  alert('サーバーエラーが発生しました。通信環境をお確かめください。通信環境に問題がない場合は、お手数ですがサーバー管理者にご連絡ください。');
+}
+
 // methods export
 export {
   searchClosestTag,
   editName,
   submitByEnter,
   createData,
-  validateNewName
+  validateNewName,
+  handleError
 }

@@ -154,7 +154,8 @@
       editName,
       submitByEnter,
       createData,
-      validateNewName
+      validateNewName,
+      handleError
   } from '../_util/methods';
 
   export default {
@@ -196,7 +197,7 @@
                 this.newName = '';
               }.bind(this));
 
-        }.bind(this)).catch(console.error);
+        }.bind(this)).catch(handleError);
       },
 
       editList (e) {
@@ -210,7 +211,7 @@
 
           displayMessage(this, res.errorMessage, 'errorMessage');
           res.input.focus();
-        }.bind(this)).catch(console.error);
+        }.bind(this)).catch(handleError);
       },
 
       deleteList (e) {
@@ -231,7 +232,7 @@
             data: newData
           }).then(function (customData) {
             this.customData = customData;
-          }.bind(this)).catch(console.error);
+          }.bind(this)).catch(handleError);
         },
         deep: true
       }
@@ -243,7 +244,7 @@
         data: this.data
       }).then(function (customData) {
         this.customData = customData;
-      }.bind(this)).catch(console.error);
+      }.bind(this)).catch(handleError);
     }
   }
 

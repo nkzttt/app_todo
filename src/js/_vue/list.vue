@@ -39,7 +39,7 @@
   .listDetail
     position: relative
     padding: 1.5rem
-    padding-right: 5rem
+    padding-right: 6.5rem
     border-radius: 3px
     background-color: #fff
     box-shadow: 1px 1px 3px $color-shadow
@@ -62,6 +62,8 @@
         font-size: $size-font-primary
         font-weight: bold
         text-decoration: none
+      &__editBtn
+        white-space: nowrap
       &__editText
         display: inline-block
         margin-right 1rem
@@ -92,6 +94,18 @@
 
   .is-highlight > .listDetail
     box-shadow 0 0 .75rem $color-main
+
+  @media (max-width: 414px)
+    .addList
+      display: block
+      width: 100%
+      &__input
+        margin-bottom: .75rem
+        padding-right 0
+      &__submit__button
+        margin-left: auto
+    .listDetail__title__editText
+      flex: 1
 </style>
 
 <template>
@@ -101,7 +115,7 @@
         <input type="text" placeholder="例）買い物リスト" v-model="newName" v-on:keypress="submitByEnter" data-addition>
       </div>
       <p class="addList__submit">
-        <button class="btn btn--primary" v-on:click="addList">リストを追加</button>
+        <button class="addList__submit__button btn btn--primary" v-on:click="addList">リストを追加</button>
       </p>
     </div>
     <p class="errorMessage" v-if="!customData.length">

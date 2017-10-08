@@ -46,6 +46,7 @@
       margin-bottom 1rem
       &__text
         width: 5.25em
+        white-space: nowrap
     &__submit
       padding-left: 5.25em
 
@@ -68,7 +69,7 @@
   .todoDetail
     position: relative
     padding: 1.5rem
-    padding-right: 5rem
+    padding-right: 6.5rem
     border-radius: 3px
     background-color: #fff
     box-shadow: 1px 1px 3px $color-shadow
@@ -91,6 +92,8 @@
         font-size: $size-font-primary
         font-weight: bold
         text-decoration: none
+      &__editBtn
+        white-space: nowrap
       &__editText
         display: inline-block
         margin-right 1rem
@@ -135,6 +138,29 @@
 
   .is-highlight > .todoDetail
     box-shadow 0 0 .75rem $color-main
+
+  @media (max-width: 414px)
+    .listName
+      position: static
+      margin: -2.25rem 0 3rem
+      font-size: $size-font-small
+      text-align: right
+
+    .addTodo
+      width: 100%
+      &__input
+        margin-bottom .75rem
+      &__submit__button
+        margin-left: auto
+
+    .todoDetail
+      &__title__editText
+        flex: 1
+      &__created
+       margin-bottom: 1.5rem
+      &__status
+        width: 100%
+        position: static
 </style>
 
 <template>
@@ -161,7 +187,7 @@
         </div>
       </transition>
       <p class="addTodo__submit">
-        <button v-on:click="addTodo" class="btn btn--primary">アイテムを追加</button>
+        <button v-on:click="addTodo" class="addTodo__submit__button btn btn--primary">アイテムを追加</button>
       </p>
     </div>
     <p class="errorMessage" v-if="!todos.length">

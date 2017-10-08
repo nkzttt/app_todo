@@ -113,6 +113,23 @@
   .todoDetail
     &__listName
       margin-bottom: 1.5rem
+
+  @media (max-width: 414px)
+    .search
+      display: block
+      width: 100%
+      padding-bottom: 0
+      &__input
+        margin-bottom: .75rem
+        padding-right 0
+      &__check
+        width: 70%
+        margin-bottom: -0.1em
+        line-height: 1.2
+      &__submit__button
+        margin-left: auto
+    .checkLabel__icon
+      top: 0
 </style>
 
 <template>
@@ -130,7 +147,7 @@
         </label>
       </p>
       <p class="search__submit">
-        <button class="btn btn--primary" v-on:click="search">
+        <button class="search__submit__button btn btn--primary" v-on:click="search">
           <span class="fa fa-search"></span>
           検索
         </button>

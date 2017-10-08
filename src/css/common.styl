@@ -121,6 +121,7 @@ a
 				color: $color-sub
 		&__hide
 			margin-top: -($size-font-small)
+			text-align: right
 			&__link
 				color: $color-disable
 
@@ -129,4 +130,36 @@ a
 		width: $size-container
 		position: relative
 		margin: 0 auto
-		padding-top: 3rem
+		padding: 3rem 0 6rem
+
+// breakpoint is portlate width of iphone 6 plus.
+@media (max-width: 414px)
+	.header
+		&__insideContainer
+			width: 100%
+
+	.rootSiteLink
+		&__logo
+			padding-left: 1rem
+		&__toolLinks
+			padding-right: 0
+			text-align: center
+
+	.help
+		&__content
+			position: fixed
+			left: 0
+			right: 0
+			margin: 0 auto
+			&::after
+				content none
+
+	.main
+		&__insideContainer
+			width: 100%
+			padding: 3rem 1rem 6rem
+
+	// todo 消してね
+	.container
+		width 375px
+		overflow: hidden

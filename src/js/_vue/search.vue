@@ -122,7 +122,7 @@
         <input type="text" placeholder="例）買い物" v-model="searchStr" v-on:keypress="submitByEnter" data-search>
       </div>
       <p class="search__check">
-        <input type="checkbox" id="ignoreDoneItem">
+        <input type="checkbox" id="ignoreDoneItem" data-ignore>
         <label for="ignoreDoneItem" class="checkLabel">
           <span class="fa fa-square-o disabled checkLabel__icon"></span>
           <span class="fa fa-check-square-o checked checkLabel__icon"></span>
@@ -241,7 +241,8 @@
         post(`/api/search`)
             .send({
               data: this.$store.state.data,
-              searchStr: this.searchStr
+              searchStr: this.searchStr,
+              ignoreDoneItem: this.$el.querySelector('[data-ignore]').checked
             })
             .end(function (err, {body}) {
               if (err) {

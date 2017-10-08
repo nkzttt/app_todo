@@ -44,6 +44,16 @@ module.exports = (postData) => {
 
     if (!isHit) return;
 
+    // ignore this data if all todoItems in the data has done.
+    if (postData.ignoreDoneItem) {
+
+      const hasAllDone = data.todos.every(({isDone}) => {
+        return isDone;
+      });
+
+      if (hasAllDone) return;
+    }
+
     data.index = i;
     hitList.push(data);
   });
@@ -56,6 +66,9 @@ module.exports = (postData) => {
       let isHit = searchRegStr.test(todo.name);
 
       if (!isHit) return;
+
+      // ignore this data if it has done.
+      if (postData.ignoreDoneItem && todo.isDone) return;
 
       todo.listIndex = listIndex;
       todo.listName = listName;

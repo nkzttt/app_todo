@@ -106,6 +106,13 @@
       &__value
         font-size: $size-font-secondary
         font-weight: bold
+    &__listName
+    &__limit
+    &__created
+      padding-left: 3rem
+  .todoDetail
+    &__listName
+      margin-bottom: 1.5rem
 </style>
 
 <template>
@@ -144,9 +151,12 @@
       <li v-for="todo in results.todos" class="results__item">
         <div class="todoDetail" v-on:click="cassetteLink">
           <p class="todoDetail__title">
-            <router-link v-bind:to="`/detail/${todo.listIndex}`" class="listDetail__title__linkText">
+            <router-link v-bind:to="`/detail/${todo.listIndex}?index=${todo.index}`" class="listDetail__title__linkText">
               {{todo.name}}
             </router-link>
+          </p>
+          <p class="todoDetail__listName">
+            リスト：{{todo.listName}}
           </p>
           <p class="todoDetail__limit">
             <span class="todoDetail__limit__heading">期　限：</span>
@@ -160,7 +170,7 @@
       </li>
     </ul>
     <p class="message message--result" v-if="hits && hits.list">
-      アイテムが
+      リストが
       <span class="message__hits">{{hits.list}}件</span>
       見つかりました。
     </p>
@@ -171,7 +181,7 @@
       <li v-for="item in results.list" class="results__item">
         <div class="listDetail" v-on:click="cassetteLink">
           <p class="listDetail__title">
-            <router-link to="/" class="listDetail__title__linkText">
+            <router-link v-bind:to="`/?index=${item.index}`" class="listDetail__title__linkText">
               {{item.name}}
             </router-link>
           </p>

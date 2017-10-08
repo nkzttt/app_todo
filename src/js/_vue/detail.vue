@@ -99,6 +99,9 @@
       &__value
         font-size: $size-font-secondary
         font-weight: bold
+    &__limit
+    &__created
+      padding-left: 3rem
     &__status
       display: flex
       align-items: center

@@ -6,7 +6,7 @@ export default {
   },
   mutations: {
     addList ({data}, listData) {
-      data.push(listData);
+      data.unshift(listData);
     },
     editList ({data}, {index, name}) {
       data[index].name = name;

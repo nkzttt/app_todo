@@ -71,6 +71,9 @@
       &__done
         font-size: $size-font-secondary
         font-weight: bold
+    &__number
+    &__nearestLimit
+      padding-left: 3rem
     &__delete
       width: 5rem
       position: absolute

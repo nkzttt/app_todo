@@ -8,6 +8,10 @@ export default {
     data: todoApp('data') || sampleData
   },
   mutations: {
+    resetApp ({data}) {
+      data = sampleData;
+      todoApp(false);
+    },
     addList ({data}, listData) {
       data.unshift(listData);
       todoApp('data', data);
@@ -40,6 +44,9 @@ export default {
     }
   },
   actions: {
+    resetApp ({commit}) {
+      commit('resetApp');
+    },
     addList ({commit}, newData) {
       const listData = createNewList(newData);
       commit('addList', listData);

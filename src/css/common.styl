@@ -40,6 +40,10 @@ a
 	width: 100%
 	align-items center
 	justify-content space-between
+	&__toolLinks
+		flex: 1
+		padding-right: 6rem
+		text-align right
 
 .siteLogo
 	display: block
@@ -59,7 +63,8 @@ a
 		font-size: 4rem
 
 .rootSearch
-	display: block
+	display: inline-block
+	width: 5rem
 	color: $color-background
 	font-size: $size-font-small
 	text-decoration: none
@@ -70,6 +75,54 @@ a
 		display: block
 		margin-bottom: 3px
 		font-size: $size-font-primary
+
+.help
+	display: inline-block
+	position: relative
+	&__button
+		@extend .rootSearch
+	&__content
+		width: 32rem
+		position: absolute
+		top: 6rem
+		right: 0
+		z-index: 1
+		padding: 1.5rem
+		border-radius: 3px
+		background-color: #fff
+		box-shadow: 1px 1px 3px $color-shadow
+		&::after
+			content ""
+			display: block
+			width: 0
+			height: 0
+			position: absolute
+			top: -2.5rem
+			right: 1.5rem
+			border: solid 1rem transparent
+			border-bottom solid 1.5rem #fff
+		&__text
+			margin-bottom: (1.5rem - .25rem)
+			font-size: $size-font-small
+			text-align: left
+			line-height: 1.4
+			> em
+				font-weight: bold
+				font-style: normal
+		&__reset
+		&__hide
+			height: 1.2rem
+			font-size: $size-font-small
+			&__link
+				text-decoration: none
+		&__reset
+			text-align: left
+			&__link
+				color: $color-sub
+		&__hide
+			margin-top: -($size-font-small)
+			&__link
+				color: $color-disable
 
 .main
 	&__insideContainer

@@ -20,79 +20,77 @@ fixture('system check')
  * - 別リストのTODOアイテムとリンクしていない
  */
 test('check addition flow', async t => {
-  const list = Selector('.list');
-  const listLink = list.find('a');
-  const initialLinkNum = await listLink.count;
-
-  // リストの追加
+  // リスト画面用変数
+  const listItems = Selector('.list').child('li');
   const newListName = '新しいリスト';
   const addListInput = Selector('.addList__input').child('input[type="text"]');
   const addListSubmit = Selector('.addList__submit').child('button');
+
+  // todo画面用変数
+  const todoItems = Selector('.todos').child('li');
+  const newTodoItemName = '新しいアイテム';
+  const addItemInput = Selector('.addTodo__input').find('input[type="text"]');
+  const addItemSubmit = Selector('.addTodo__submit').child('button');
+
+  // 共通変数
+  const topLink = Selector('.siteLogo');
+  const errorMessage = Selector('.errorMessage');
+  let currentErrorMessage = null;
+  let currentErrorMessageNum = 0;
+
+  // 新規TODOアイテムの追加
+  const initialLinkNum = await listItems.count;
 
   await t
     .typeText(addListInput, newListName)
     .click(addListSubmit);
 
   // リスト追加後の数確認
-  const currentLinkNum = await listLink.count;
-
+  let currentLinkNum = await listItems.count;
   assert(currentLinkNum === initialLinkNum + 1);
 
   // 新規リストの詳細画面へ遷移
-  const newListLink = listLink.nth(currentLinkNum - 1);
-
   await t
-    .click(newListLink)
+    .click(listItems.nth(currentLinkNum - 1))
     .wait(500);
-
-  // アイテムがないことの確認
-  const todoItems = Selector('.todos').child('li');
-  const initialItemsNum = await todoItems.count;
-
-  assert(initialItemsNum === 0);
 
   // 空メッセージの確認
   const emptyMessage = '登録されているアイテムがありません。アイテムを追加してください。';
-  const errorMessage = await Selector('.errorMessage').innerText;
+  currentErrorMessage = await errorMessage().innerText;
 
-  assert(errorMessage.trim() === emptyMessage);
+  assert(currentErrorMessage.trim() === emptyMessage);
+
+  // アイテムがないことの確認
+  const initialItemsNum = await todoItems.count;
+  assert(initialItemsNum === 0);
 
   // 新規TODOアイテムの追加
-  const newTodoItemName = '新しいアイテム';
-  const addItemInput = Selector('.addTodo__input').find('input[type="text"]');
-  const addItemSubmit = Selector('.addTodo__submit').child('button');
-
   await t
     .typeText(addItemInput, newTodoItemName)
     .click(addItemSubmit);
 
   // リスト追加後の数確認
-  const currentItemsNum = await todoItems.count;
-
+  let currentItemsNum = await todoItems.count;
   assert(currentItemsNum === initialItemsNum + 1);
 
-  // リスト画面へ戻り、親リストが先頭になっていることの確認
-  const topLink = Selector('.siteLogo');
+  // 空メッセージが消えているか確認
+  currentErrorMessageNum = await errorMessage().count;
+  assert(currentErrorMessageNum === 0);
 
+  // リスト画面へ戻り、親リストが先頭になっていることの確認
   await t
     .click(topLink)
     .wait(500);
 
-  const listLinkMovedToTop = await listLink.nth(0).innerText;
-
-  assert(listLinkMovedToTop.trim() === newListName);
-
-  // 空メッセージが消えているか確認
-  const errorMessageNum = await Selector('.errorMessage').count;
-  assert(errorMessageNum === 0);
+  const textDisplayedAtTop = await listItems.nth(0).find('.listDetail__title__linkText').innerText;
+  assert(textDisplayedAtTop.trim() === newListName);
 
   // 再度新規リスト詳細画面へ遷移し新規TODOアイテムを確認する
   await t
-    .click(listLink.nth(0))
+    .click(listItems.nth(0))
     .wait(500);
 
-  const newTodoItem = await Selector('.todoDetail__title__text').nth(0).innerText;
-
+  const newTodoItem = await todoItems.nth(0).find('.todoDetail__title__text').innerText;
   assert(newTodoItem.trim() === newTodoItemName);
 
   // アイテムのステータスを変更し、doneクラスを確認する
@@ -107,12 +105,12 @@ test('check addition flow', async t => {
     .click(topLink)
     .wait(500);
 
-  const hasListDoneClass = await listLink.nth(0).parent('.listDetail').hasClass('listDetail--done');
+  const hasListDoneClass = await listItems.nth(0).child('div').hasClass('listDetail--done');
   assert(hasListDoneClass);
 
   // 別リストの詳細画面へ遷移
   await t
-    .click(listLink.nth(1))
+    .click(listItems.nth(1))
     .wait(500);
 
   // 上で追加したアイテムが存在しないことの確認

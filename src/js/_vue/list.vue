@@ -89,6 +89,9 @@
         font-size: $size-font-primary
         font-weight: bold
         cursor: pointer
+
+  .is-highlight > .listDetail
+    box-shadow 0 0 .75rem $color-main
 </style>
 
 <template>
@@ -156,6 +159,8 @@
       validateNewName,
       handleError
   } from '../_util/methods';
+
+  import jump from 'jump.js';
 
   export default {
     data () {
@@ -242,11 +247,36 @@
     },
 
     mounted () {
+      // サーバーでデータ加工
       createData({
         type: 'list',
         data: this.data
       }).then(function (customData) {
         this.customData = customData;
+
+        this.$nextTick(function () { // レンダー完了待機
+
+          // 検索結果ハイライト
+          const targetIndex = this.$route.query.index;
+          if (!targetIndex) return;
+
+          const searchedTarget = this.$el.querySelector(`.list > [data-index="${targetIndex}"]`);
+
+          // ページ遷移アニメーション分待機
+          setTimeout(function () {
+
+            // scrollTo
+            jump(searchedTarget);
+
+            // highlight
+            searchedTarget.classList.add('is-highlight');
+            setTimeout(function () {
+              searchedTarget.classList.remove('is-highlight');
+            }, 3000);
+
+          }, 300);
+
+        });
       }.bind(this)).catch(handleError);
     }
   }

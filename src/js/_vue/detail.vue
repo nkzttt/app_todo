@@ -132,6 +132,9 @@
         font-size: $size-font-primary
         font-weight: bold
         cursor: pointer
+
+  .is-highlight > .todoDetail
+    box-shadow 0 0 .75rem $color-main
 </style>
 
 <template>
@@ -212,6 +215,8 @@
       transformDateString,
       handleError
   } from '../_util/methods';
+
+  import jump from 'jump.js';
 
   import datePicker from 'vuejs-datepicker';
   const DPOptions = {
@@ -318,6 +323,27 @@
 
       transformDateString,
       submitByEnter
+    },
+
+    mounted () {
+      const todoIndex = this.$route.query.index;
+      if (!todoIndex) return;
+
+      const searchedTarget = this.$el.querySelector(`.todos > [data-index="${todoIndex}"]`);
+
+      // ページ遷移アニメーション分待機
+      setTimeout(function () {
+
+        // scrollTo
+        jump(searchedTarget);
+
+        // highlight
+        searchedTarget.classList.add('is-highlight');
+        setTimeout(function () {
+          searchedTarget.classList.remove('is-highlight');
+        }, 3000);
+
+      }, 300);
     }
   }
 </script>

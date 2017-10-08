@@ -164,15 +164,15 @@
         <button v-on:click="addTodo" class="btn btn--primary">アイテムを追加</button>
       </p>
     </div>
+    <p class="errorMessage" v-if="!todos.length">
+      登録されているアイテムがありません。アイテムを追加してください。
+    </p>
     <transition name="fade">
       <p class="errorMessage" v-text="errorMessage" v-if="errorMessage"></p>
     </transition>
     <transition name="fade">
       <p class="message" v-text="message" v-if="message"></p>
     </transition>
-    <p class="errorMessage" v-if="!todos.length">
-      登録されているアイテムがありません。アイテムを追加してください。
-    </p>
     <ul class="todos" v-if="todos.length">
       <li v-for="(todo, i) in todos" class="todos__item" v-bind:data-index="i">
         <div class="todoDetail" v-bind:class="{'todoDetail--done': todo.isDone}" v-on:click="toggleStatus">
@@ -318,7 +318,9 @@
         this.$store.dispatch('deleteTodo', {
           listIndex: this.listIndex,
           index
-        });
+        }).then(function () {
+          displayMessage(this, 'アイテムが正常に削除されました。');
+        }.bind(this));
       },
 
       transformDateString,

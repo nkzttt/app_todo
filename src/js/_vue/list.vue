@@ -104,15 +104,15 @@
         <button class="btn btn--primary" v-on:click="addList">リストを追加</button>
       </p>
     </div>
+    <p class="errorMessage" v-if="!customData.length">
+      登録されているリストがありません。リストを追加してください。
+    </p>
     <transition name="fade">
       <p class="errorMessage" v-text="errorMessage" v-if="errorMessage"></p>
     </transition>
     <transition name="fade">
       <p class="message" v-text="message" v-if="message"></p>
     </transition>
-    <p class="errorMessage" v-if="!customData.length">
-      登録されているリストがありません。リストを追加してください。
-    </p>
     <ul class="list" v-if="customData.length">
       <li v-for="item in customData" class="list__item" v-bind:data-index="item.index">
         <div class="listDetail" v-bind:class="{'listDetail--done': item.todos.total && item.todos.total === item.todos.done}" v-on:click="cassetteLink">

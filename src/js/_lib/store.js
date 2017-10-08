@@ -1,32 +1,42 @@
-import Data from '../../sample.json';
+import store from 'store2';
+import sampleData from '../../sample.json';
+
+const todoApp = store.namespace('nkztTodoApp');
 
 export default {
   state: {
-    data: Data
+    data: todoApp('data') || sampleData
   },
   mutations: {
     addList ({data}, listData) {
       data.unshift(listData);
+      todoApp('data', data);
     },
     editList ({data}, {index, name}) {
       data[index].name = name;
+      todoApp('data', data);
     },
     deleteList ({data}, index) {
-      data.splice(index, 1)
+      data.splice(index, 1);
+      todoApp('data', data);
     },
     addTodo ({data}, {listIndex, todoData}) {
       data[listIndex].todos.unshift(todoData);
+      todoApp('data', data);
     },
     editTodo ({data}, {index, listIndex, name}) {
       data[listIndex].todos[index].name = name;
+      todoApp('data', data);
     },
     deleteTodo ({data}, {listIndex, index}) {
       data[listIndex].todos.splice(index, 1)
+      todoApp('data', data);
     },
     toggleTodoStatus ({data}, {listIndex, index}) {
       const target = data[listIndex].todos[index];
       const isDone = target.isDone;
       target.isDone = !isDone;
+      todoApp('data', data);
     }
   },
   actions: {
